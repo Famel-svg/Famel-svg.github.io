@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="pt-BR" data-lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Auditoria PIX · Rafael Tanimoto</title>
+  <meta name="description" content="Trilha de auditoria de transferências Pix com Spring AOP e Hibernate Envers, pensada para a Resolução BCB 1/2020 e a LGPD.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container">
+      <a class="brand" href="../index.html">~/rafael</a>
+      <div class="links">
+        <a href="../index.html#projects"><span lang="pt">projetos</span><span lang="en">projects</span></a>
+        <a href="../index.html#contact"><span lang="pt">contato</span><span lang="en">contact</span></a>
+      </div>
+      <button class="lang-toggle" aria-label="Trocar idioma / Switch language">EN</button>
+    </div>
+  </nav>
+
+  <header class="p-hero">
+    <div class="container">
+      <a class="back" href="../index.html#projects">← <span lang="pt">voltar aos projetos</span><span lang="en">back to projects</span></a>
+      <h1>Auditoria PIX</h1>
+      <div class="tagline"><span lang="pt">Trilha de auditoria de transferências Pix: quem, quando, o quê e de onde</span><span lang="en">Audit trail for Pix transfers: who, when, what changed and from where</span></div>
+      <div class="chips" style="margin-top:16px">
+        <span class="chip">Java 21</span>
+        <span class="chip">Spring Boot 3.3.4</span>
+        <span class="chip">Hibernate Envers</span>
+        <span class="chip">Spring AOP</span>
+        <span class="chip">Spring Security</span>
+        <span class="chip">PostgreSQL 16</span>
+        <span class="chip">JUnit 5</span>
+        <span class="chip">JaCoCo</span>
+      </div>
+      <div class="meta">
+        <a class="btn solid" href="https://github.com/Famel-svg/Sistema_Auditoria_PIX" target="_blank" rel="noopener">GitHub →</a>
+      </div>
+    </div>
+  </header>
+
+  <section style="padding-top:0">
+    <div class="container reveal">
+      <div class="problem">
+        <strong><span lang="pt">o problema</span><span lang="en">the problem</span></strong>
+        <p><span lang="pt">A Resolução BCB nº 1/2020 e a LGPD pedem rastreabilidade de cada operação Pix: quem executou, quando, de onde, e como os dados estavam antes. Um log de texto registra que algo aconteceu, mas não mostra o que mudou. Este projeto separa as duas coisas: o AOP registra o contexto e o Envers registra o estado da entidade a cada revisão.</span><span lang="en">BCB Resolution 1/2020 and the LGPD require traceability of every Pix operation: who ran it, when, from where, and what the data looked like before. A text log records that something happened but not what changed. This project splits the two concerns: AOP records the context and Envers records the entity state at each revision.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Raio-X</span><span lang="en">X-ray</span></h2>
+      <p class="section-sub reveal"><span lang="pt">Fluxo de criar uma transferência (duas linhas de cima) e de consultar o histórico (linha de baixo).</span><span lang="en">Flow of creating a transfer (top two rows) and querying its history (bottom row).</span></p>
+      <div class="diagram-wrap reveal">
+        <svg class="diagram" viewBox="0 0 960 400" role="img" aria-label="Diagrama do fluxo de auditoria / Audit flow diagram">
+          <!-- lane labels -->
+          <text class="label-sm" x="20" y="30" lang="pt">escrita da transferência</text>
+          <text class="label-sm" x="20" y="30" lang="en">transfer write</text>
+          <text class="label-sm" x="20" y="168" lang="pt">auditoria: quem, de onde, o que mudou</text>
+          <text class="label-sm" x="20" y="168" lang="en">audit: who, from where, what changed</text>
+          <text class="label-sm" x="20" y="312" lang="pt">consulta do histórico</text>
+          <text class="label-sm" x="20" y="312" lang="en">history query</text>
+
+          <!-- edges (static) and animated flows -->
+          <path class="edge" d="M164 76 H212"/>
+          <path class="edge" d="M356 76 H404"/>
+          <path class="edge" d="M548 76 H596"/>
+          <path class="edge" d="M740 76 H788"/>
+          <path class="edge" d="M668 108 V184"/>
+          <path class="edge" d="M740 216 H788"/>
+          <path class="edge" d="M476 108 V184"/>
+          <path class="edge" d="M404 216 H356"/>
+          <path class="edge" d="M212 216 H164"/>
+          <path class="edge" d="M164 356 H212"/>
+          <path class="edge" d="M356 356 H404"/>
+          <path class="edge" d="M860 248 V356 H548"/>
+
+          <path class="flow" d="M164 76 H212"/>
+          <path class="flow" d="M356 76 H404"/>
+          <path class="flow" d="M548 76 H596"/>
+          <path class="flow" d="M740 76 H788"/>
+          <path class="flow" d="M668 108 V184"/>
+          <path class="flow" d="M740 216 H788"/>
+          <path class="flow warn" d="M476 108 V184"/>
+          <path class="flow warn" d="M404 216 H356"/>
+          <path class="flow warn" d="M212 216 H164"/>
+          <path class="flow blue" d="M164 356 H212"/>
+          <path class="flow blue" d="M356 356 H404"/>
+          <path class="flow blue" d="M860 248 V356 H548"/>
+          <text class="label-sm" x="704" y="346" text-anchor="middle" lang="pt">revisões</text>
+          <text class="label-sm" x="704" y="346" text-anchor="middle" lang="en">revisions</text>
+
+          <!-- nodes: row 1 -->
+          <g class="node">
+            <rect x="20" y="44" width="144" height="64" rx="10"/>
+            <text x="92" y="71" text-anchor="middle" lang="pt">Cliente</text>
+            <text x="92" y="71" text-anchor="middle" lang="en">Client</text>
+            <text class="label-sm" x="92" y="91" text-anchor="middle">POST /transferencias</text>
+          </g>
+          <g class="node">
+            <rect x="212" y="44" width="144" height="64" rx="10"/>
+            <text x="284" y="71" text-anchor="middle">PixController</text>
+            <text class="label-sm" x="284" y="91" text-anchor="middle">@Valid</text>
+          </g>
+          <g class="node">
+            <rect x="404" y="44" width="144" height="64" rx="10"/>
+            <text x="476" y="71" text-anchor="middle">PixService</text>
+            <text class="label-sm" x="476" y="91" text-anchor="middle">@Transactional</text>
+          </g>
+          <g class="node">
+            <rect x="596" y="44" width="144" height="64" rx="10"/>
+            <text x="668" y="71" text-anchor="middle">Hibernate</text>
+            <text class="label-sm" x="668" y="91" text-anchor="middle">repository.save()</text>
+          </g>
+          <g class="node">
+            <rect x="788" y="44" width="144" height="64" rx="10"/>
+            <text x="860" y="71" text-anchor="middle">pix_transferencia</text>
+            <text class="label-sm" x="860" y="91" text-anchor="middle" lang="pt">estado atual</text>
+            <text class="label-sm" x="860" y="91" text-anchor="middle" lang="en">current state</text>
+          </g>
+
+          <!-- nodes: row 2 -->
+          <g class="node warn">
+            <rect x="20" y="184" width="144" height="64" rx="10"/>
+            <text x="92" y="211" text-anchor="middle">audit_log</text>
+            <text class="label-sm" x="92" y="231" text-anchor="middle" lang="pt">quem, IP, rota</text>
+            <text class="label-sm" x="92" y="231" text-anchor="middle" lang="en">who, IP, route</text>
+          </g>
+          <g class="node">
+            <rect x="212" y="184" width="144" height="64" rx="10"/>
+            <text x="284" y="211" text-anchor="middle">AuditLogService</text>
+            <text class="label-sm" x="284" y="231" text-anchor="middle">REQUIRES_NEW</text>
+          </g>
+          <g class="node accent">
+            <rect x="404" y="184" width="144" height="64" rx="10"/>
+            <text x="476" y="211" text-anchor="middle">AuditAspect</text>
+            <text class="label-sm" x="476" y="231" text-anchor="middle" lang="pt">captura no finally</text>
+            <text class="label-sm" x="476" y="231" text-anchor="middle" lang="en">captured in finally</text>
+          </g>
+          <g class="node">
+            <rect x="596" y="184" width="144" height="64" rx="10"/>
+            <text x="668" y="211" text-anchor="middle">Envers</text>
+            <text class="label-sm" x="668" y="231" text-anchor="middle">@Audited</text>
+          </g>
+          <g class="node warn">
+            <rect x="788" y="184" width="144" height="64" rx="10"/>
+            <text x="860" y="211" text-anchor="middle" lang="pt">tabelas _AUD</text>
+            <text x="860" y="211" text-anchor="middle" lang="en">_AUD tables</text>
+            <text class="label-sm" x="860" y="231" text-anchor="middle">+ REVINFO</text>
+          </g>
+
+          <!-- nodes: row 3 -->
+          <g class="node">
+            <rect x="20" y="324" width="144" height="64" rx="10"/>
+            <text x="92" y="351" text-anchor="middle">GET /historico</text>
+            <text class="label-sm" x="92" y="371" text-anchor="middle" lang="pt">consulta</text>
+            <text class="label-sm" x="92" y="371" text-anchor="middle" lang="en">query</text>
+          </g>
+          <g class="node">
+            <rect x="212" y="324" width="144" height="64" rx="10"/>
+            <text x="284" y="351" text-anchor="middle">buscarHistorico</text>
+            <text class="label-sm" x="284" y="371" text-anchor="middle">PixService</text>
+          </g>
+          <g class="node">
+            <rect x="404" y="324" width="144" height="64" rx="10"/>
+            <text x="476" y="351" text-anchor="middle">AuditReader</text>
+            <text class="label-sm" x="476" y="371" text-anchor="middle" lang="pt">lê as revisões</text>
+            <text class="label-sm" x="476" y="371" text-anchor="middle" lang="en">reads revisions</text>
+          </g>
+
+          <!-- packets -->
+          <circle class="packet" r="5" cx="164" cy="76"><animateMotion dur="1.6s" begin="0s" repeatCount="indefinite" path="M0 0 H48"/></circle>
+          <circle class="packet" r="5" cx="356" cy="76"><animateMotion dur="1.6s" begin="0.4s" repeatCount="indefinite" path="M0 0 H48"/></circle>
+          <circle class="packet" r="5" cx="548" cy="76"><animateMotion dur="1.6s" begin="0.8s" repeatCount="indefinite" path="M0 0 H48"/></circle>
+          <circle class="packet" r="5" cx="740" cy="76"><animateMotion dur="1.6s" begin="1.2s" repeatCount="indefinite" path="M0 0 H48"/></circle>
+          <circle class="packet" r="5" cx="668" cy="108"><animateMotion dur="1.6s" begin="1.6s" repeatCount="indefinite" path="M0 0 V76"/></circle>
+          <circle class="packet" r="5" cx="740" cy="216"><animateMotion dur="1.6s" begin="2s" repeatCount="indefinite" path="M0 0 H48"/></circle>
+          <circle class="packet" r="5" cx="476" cy="108"><animateMotion dur="1.6s" begin="0.2s" repeatCount="indefinite" path="M0 0 V76"/></circle>
+          <circle class="packet" r="5" cx="404" cy="216"><animateMotion dur="1.6s" begin="0.6s" repeatCount="indefinite" path="M0 0 H-48"/></circle>
+          <circle class="packet" r="5" cx="212" cy="216"><animateMotion dur="1.6s" begin="1s" repeatCount="indefinite" path="M0 0 H-48"/></circle>
+          <circle class="packet" r="5" cx="164" cy="356"><animateMotion dur="1.6s" begin="0s" repeatCount="indefinite" path="M0 0 H48"/></circle>
+          <circle class="packet" r="5" cx="356" cy="356"><animateMotion dur="1.6s" begin="0.5s" repeatCount="indefinite" path="M0 0 H48"/></circle>
+          <circle class="packet" r="5" cx="860" cy="248"><animateMotion dur="2.2s" begin="0.3s" repeatCount="indefinite" path="M0 0 V108 H-312"/></circle>
+        </svg>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><div>
+          <h4><span lang="pt">A requisição chega e é validada</span><span lang="en">The request arrives and is validated</span></h4>
+          <p><span lang="pt">PixController recebe o POST e valida o PixRequest com @Valid antes de chamar o serviço.</span><span lang="en">PixController takes the POST and validates PixRequest with @Valid before it calls the service.</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">O aspecto envolve o serviço</span><span lang="en">The aspect wraps the service</span></h4>
+          <p><span lang="pt">AuditAspect intercepta todo método de PixService.* com @Around. A chamada segue normalmente; o registro acontece no finally, então vale também quando o serviço lança exceção.</span><span lang="en">AuditAspect intercepts every PixService.* method with @Around. The call proceeds as usual; logging runs in finally, so it also happens when the service throws.</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">O contexto é capturado</span><span lang="en">The context is captured</span></h4>
+          <p><span lang="pt">AuditLogService.registrar lê o usuário do SecurityContext, o IP e a URI da requisição, e grava em audit_log numa transação própria (REQUIRES_NEW). Por isso o registro persiste mesmo se a operação de negócio sofrer rollback.</span><span lang="en">AuditLogService.registrar reads the user from the SecurityContext, the IP and the request URI, and writes to audit_log in its own transaction (REQUIRES_NEW). That is why the record persists even if the business operation rolls back.</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">O Envers grava a revisão</span><span lang="en">Envers writes the revision</span></h4>
+          <p><span lang="pt">Ao salvar, o Hibernate grava pix_transferencia. Como PixTransferencia tem @Audited, o Envers grava o estado completo em pix_transferencia_aud e o número da revisão em REVINFO.</span><span lang="en">On save, Hibernate writes pix_transferencia. Because PixTransferencia is @Audited, Envers writes the full state to pix_transferencia_aud and the revision number to REVINFO.</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">A consulta lê as revisões</span><span lang="en">The query reads the revisions</span></h4>
+          <p><span lang="pt">GET /historico chama buscarHistorico, que pede a lista de revisões ao AuditReader e lê cada versão com find().</span><span lang="en">GET /historico calls buscarHistorico, which asks AuditReader for the list of revisions and reads each version with find().</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">O que a consulta devolve</span><span lang="en">What the query returns</span></h4>
+          <p><span lang="pt">A resposta lista cada revisão da transferência com o seu status. Cada versão completa continua guardada nas tabelas _AUD, do início ao fim do histórico.</span><span lang="en">The response lists every revision of the transfer with its status. Each full version stays stored in the _AUD tables, across the whole history.</span></p>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Código que importa</span><span lang="en">Code that matters</span></h2>
+
+      <div class="code-block reveal">
+        <div class="bar">src/main/java/br/com/pixauditoria/aspect/AuditAspect.java</div>
+        <pre><code class="language-java">@Aspect
+@Component
+@Order(1)
+public class AuditAspect {
+
+    private final AuditLogService auditLogService;
+
+    public AuditAspect(AuditLogService auditLogService) {
+        this.auditLogService = auditLogService;
+    }
+
+    @Around("execution(* br.com.pixauditoria.service.PixService.*(..))")
+    public Object interceptar(ProceedingJoinPoint joinPoint) throws Throwable {
+        String metodo = joinPoint.getSignature().getName();
+        try {
+            return joinPoint.proceed();
+        } finally {
+            auditLogService.registrar(metodo); // ← delega para o service
+        }
+    }
+}</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">O aspecto só delega para AuditLogService. A regra de auditoria fica fora de PixService, então o código de negócio não depende dela.</span><span lang="en">The aspect only delegates to AuditLogService. The audit rule stays out of PixService, so the business code does not depend on it.</span></p>
+
+      <div class="code-block reveal">
+        <div class="bar">src/main/java/br/com/pixauditoria/service/AuditLogService.java</div>
+        <pre><code class="language-java">    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void registrar(String metodo) {
+        try {
+            String usuario = Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                    .map(Authentication::getName)
+                    .orElse("ANONIMO");
+
+            RequestAttributes attrs = RequestContextHolder.getRequestAttributes();
+
+            String ip = "N/A";
+            String endpoint = "N/A";
+
+            if (attrs instanceof ServletRequestAttributes servletAttrs) {
+                HttpServletRequest request = servletAttrs.getRequest();
+                ip = request.getRemoteAddr();
+                endpoint = request.getRequestURI();
+            }
+
+            auditLogRepository.save(new AuditLog(usuario, ip, metodo, endpoint, "PixTransferencia"));
+
+        } catch (Exception e) {
+            // Falha silenciosa — log nunca deve quebrar o fluxo de negócio
+            System.err.println("Falha ao salvar log de auditoria: " + e.getMessage());
+        }
+    }</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">O finally registra cada operação do serviço, mesmo quando ela falha, com a origem (usuário, IP, endpoint) gravada em audit_log. REQUIRES_NEW usa transação própria, então o registro sobrevive a um rollback da operação. O catch mantém a operação de negócio de pé mesmo se a auditoria falhar.</span><span lang="en">The finally block records each service operation, even when it fails, with its origin (user, IP, endpoint) written to audit_log. REQUIRES_NEW uses its own transaction, so the record survives a rollback of the operation. The catch keeps the business operation running even if the audit write fails.</span></p>
+
+      <div class="code-block reveal">
+        <div class="bar">src/main/java/br/com/pixauditoria/service/PixService.java</div>
+        <pre><code class="language-java">    @Transactional(readOnly = true)
+    public List&lt;AuditLogResponse&gt; buscarHistorico(UUID id) {
+        pixRepository.findById(id).orElseThrow(() -&gt; new TransferenciaNaoEncontradaException(id));
+
+        AuditReader auditReader = AuditReaderFactory.get(entityManager);
+        List&lt;Number&gt; revisions = auditReader.getRevisions(PixTransferencia.class, id);
+
+        return revisions.stream().map(rev -&gt; {
+            PixTransferencia versao = auditReader.find(PixTransferencia.class, id, rev);
+            return new AuditLogResponse(
+                    "SYSTEM",
+                    "N/A",
+                    "ENVERS_REVISION",
+                    "/historico",
+                    String.valueOf(rev),
+                    versao.getStatus().toString()
+            );
+        }).toList();
+    }</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">O histórico usa AuditReader sobre o EntityManager e lista cada revisão com o seu status. O estado completo de cada versão fica guardado em _aud, pronto para comparação.</span><span lang="en">History uses AuditReader over the EntityManager and lists each revision with its status. The full state of each version is kept in _aud, ready for comparison.</span></p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Prova</span><span lang="en">Proof</span></h2>
+      <div class="proof">
+        <div class="card reveal">
+          <div class="big">80%</div>
+          <p class="muted"><span lang="pt">gate de cobertura de linhas configurado no JaCoCo (BUNDLE), no pom.xml do build</span><span lang="en">line coverage gate configured in JaCoCo (BUNDLE), in the build's pom.xml</span></p>
+        </div>
+        <div class="card reveal">
+          <div class="big">22</div>
+          <p class="muted"><span lang="pt">métodos @Test em 4 classes: AuditAspectTest, EnversConfigTest, PixControllerTest, PixServiceTest</span><span lang="en">@Test methods in 4 classes: AuditAspectTest, EnversConfigTest, PixControllerTest, PixServiceTest</span></p>
+        </div>
+        <div class="card reveal">
+          <div class="big">5</div>
+          <p class="muted"><span lang="pt">cenários do AuditAspectTest com servidor HTTP real: criação, exceção, consulta, IP e endpoint, usuário anônimo</span><span lang="en">AuditAspectTest scenarios on a real HTTP server: create, exception, lookup, IP and endpoint, anonymous user</span></p>
+        </div>
+        <div class="card reveal">
+          <div class="big">1</div>
+          <p class="muted"><span lang="pt">entidade marcada com @Audited (PixTransferencia), a que o Envers versiona</span><span lang="en">entity marked @Audited (PixTransferencia), the one Envers versions</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container next-prev">
+      <a class="btn" href="safepix-async.html">← SafePix Async</a>
+      <a class="btn" href="estoque-reserva.html">Estoque Reserva →</a>
+    </div>
+  </section>
+
+  <footer>© 2026 Rafael Andrade Tanimoto</footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="../js/main.js"></script>
+</body>
+</html>
