@@ -1,0 +1,111 @@
+<!doctype html>
+<!-- TEMPLATE for a project x-ray page. Copy to projects/<slug>.html and replace every {{...}}.
+     Rules:
+     - Every visible text exists in PT and EN: <span lang="pt">..</span><span lang="en">..</span>
+       (code, product names and tech names may stay as-is, no duplication).
+     - Diagram = inline SVG, class="diagram", viewBox width 960. Use classes from css/style.css:
+       <g class="node"> / "node accent" / "node warn" / "node danger"  (rect + text inside)
+       <path class="edge"> static line, <path class="flow"> animated dashed line (+ .blue/.warn/.danger)
+       <circle class="packet" r="5"><animateMotion dur="3s" repeatCount="indefinite" path="..."/></circle>
+       Text in SVG: put the PT/EN pair as two <text> elements with lang="pt"/lang="en".
+     - Code snippets: REAL code from the repo (shortened with "// ..." allowed), never invented.
+     - No other CSS/JS files; small <style> block in this page only if really needed. -->
+<html lang="pt-BR" data-lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{Project Name}} · Rafael Tanimoto</title>
+  <meta name="description" content="{{one line PT description}}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container">
+      <a class="brand" href="../index.html">~/rafael</a>
+      <div class="links">
+        <a href="../index.html#projects"><span lang="pt">projetos</span><span lang="en">projects</span></a>
+        <a href="../index.html#contact"><span lang="pt">contato</span><span lang="en">contact</span></a>
+      </div>
+      <button class="lang-toggle" aria-label="Trocar idioma / Switch language">EN</button>
+    </div>
+  </nav>
+
+  <header class="p-hero">
+    <div class="container">
+      <a class="back" href="../index.html#projects">← <span lang="pt">voltar aos projetos</span><span lang="en">back to projects</span></a>
+      <h1>{{Project Name}}</h1>
+      <div class="tagline"><span lang="pt">{{tagline PT}}</span><span lang="en">{{tagline EN}}</span></div>
+      <div class="chips" style="margin-top:16px">{{<span class="chip">Tech</span> ...}}</div>
+      <div class="meta">
+        <a class="btn solid" href="{{repo url}}" target="_blank" rel="noopener">GitHub →</a>
+      </div>
+    </div>
+  </header>
+
+  <section style="padding-top:0">
+    <div class="container reveal">
+      <div class="problem">
+        <strong><span lang="pt">o problema</span><span lang="en">the problem</span></strong>
+        <p><span lang="pt">{{problem PT}}</span><span lang="en">{{problem EN}}</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Raio-X</span><span lang="en">X-ray</span></h2>
+      <p class="section-sub reveal"><span lang="pt">{{how the flow works PT}}</span><span lang="en">{{EN}}</span></p>
+      <div class="diagram-wrap reveal">
+        <svg class="diagram" viewBox="0 0 960 420" role="img" aria-label="{{diagram description}}">
+          <!-- example node -->
+          <g class="node accent">
+            <rect x="20" y="40" width="160" height="56" rx="10"/>
+            <text x="100" y="73" text-anchor="middle">Client</text>
+          </g>
+          <!-- example flow + packet -->
+          <path class="edge" d="M180 68 H300"/>
+          <path class="flow" d="M180 68 H300"/>
+          <circle class="packet" r="5"><animateMotion dur="2.5s" repeatCount="indefinite" path="M180 68 H300"/></circle>
+        </svg>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><div><h4><span lang="pt">{{step title}}</span><span lang="en">{{}}</span></h4><p><span lang="pt">{{}}</span><span lang="en">{{}}</span></p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Código que importa</span><span lang="en">Code that matters</span></h2>
+      <div class="code-block reveal">
+        <div class="bar">{{path/in/repo/File.java}}</div>
+        <pre><code class="language-java">{{real code, HTML-escaped}}</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">{{why this code matters}}</span><span lang="en">{{}}</span></p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Prova</span><span lang="en">Proof</span></h2>
+      <div class="proof">
+        <div class="card reveal"><div class="big">{{50→1}}</div><p class="muted"><span lang="pt">{{}}</span><span lang="en">{{}}</span></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container next-prev">
+      <a class="btn" href="{{prev}}.html">← {{Prev name}}</a>
+      <a class="btn" href="{{next}}.html">{{Next name}} →</a>
+    </div>
+  </section>
+
+  <footer>© 2026 Rafael Andrade Tanimoto</footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

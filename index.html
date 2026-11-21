@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="pt-BR" data-lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rafael Tanimoto · Backend Developer</title>
+  <meta name="description" content="Portfólio de Rafael Andrade Tanimoto: backend Java/Spring Boot, Android e dados. Raio-X de como cada projeto funciona por dentro.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2307090d'/><text x='5' y='22' font-family='monospace' font-size='16' fill='%2339ff9f'>&gt;_</text></svg>">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container">
+      <a class="brand" href="#top">~/rafael</a>
+      <div class="links">
+        <a href="#about"><span lang="pt">sobre</span><span lang="en">about</span></a>
+        <a href="#stack">stack</a>
+        <a href="#projects"><span lang="pt">projetos</span><span lang="en">projects</span></a>
+        <a href="#contact"><span lang="pt">contato</span><span lang="en">contact</span></a>
+      </div>
+      <button class="lang-toggle" aria-label="Trocar idioma / Switch language">EN</button>
+    </div>
+  </nav>
+
+  <header class="hero" id="top">
+    <canvas id="net" aria-hidden="true"></canvas>
+    <div class="content">
+      <div class="prompt">$ whoami</div>
+      <h1>Rafael Andrade Tanimoto</h1>
+      <h2 data-type-pt="Desenvolvedor Backend Java|Spring Boot · RabbitMQ · PostgreSQL|Android com Kotlin|Dados com Python e Power BI"
+          data-type-en="Backend Java Developer|Spring Boot · RabbitMQ · PostgreSQL|Android with Kotlin|Data with Python and Power BI"></h2>
+      <p>
+        <span lang="pt">Gosto dos problemas que aparecem depois do tutorial: requisição duplicada, dois clientes disputando o último item do estoque, saber quem alterou um registro e quando. Aqui cada projeto mostra como funciona por dentro.</span>
+        <span lang="en">I like the problems that show up after the tutorial: duplicated requests, two customers fighting for the last item in stock, knowing who changed a record and when. Here each project shows how it works inside.</span>
+      </p>
+      <div class="cta">
+        <a class="btn solid" href="#projects"><span lang="pt">ver o raio-X dos projetos</span><span lang="en">see the projects' x-ray</span> →</a>
+        <a class="btn" href="#contact"><span lang="pt">contato</span><span lang="en">contact</span></a>
+      </div>
+    </div>
+  </header>
+
+  <section id="about">
+    <div class="container about-grid">
+      <div class="reveal">
+        <h2 class="section-title"><span lang="pt">Sobre</span><span lang="en">About</span></h2>
+        <p class="section-sub">São Paulo · <span lang="pt">Inglês fluente</span><span lang="en">Fluent English</span></p>
+        <p>
+          <span lang="pt">Desenvolvedor backend formado em Análise e Desenvolvimento de Sistemas pela FIAP e Assistente de TI na Núcleo Engenharia Consultiva. Trabalho principalmente com Java e Spring Boot, e cada projeto meu resolve um problema real com um teste que prova.</span>
+          <span lang="en">Backend developer with a degree in Systems Analysis and Development from FIAP, working as IT Assistant at Núcleo Engenharia Consultiva. I work mostly with Java and Spring Boot, and each of my projects solves a real problem with a test that proves it.</span>
+        </p>
+        <br>
+        <p>
+          <span lang="pt">Também faço apps Android em Kotlin e Compose, offline e sem cadastro. Estudei Design Digital na Anhembi Morumbi antes da FIAP, então penso em quem usa, não só em como funciona.</span>
+          <span lang="en">I also build Android apps in Kotlin and Compose, offline and account-free. I studied Digital Design at Anhembi Morumbi before FIAP, so I think about who uses it, not only how it works.</span>
+        </p>
+      </div>
+      <div class="timeline reveal">
+        <div class="item">
+          <div class="when">2026 → <span lang="pt">atual</span><span lang="en">now</span></div>
+          <h4><span lang="pt">Assistente de TI</span><span lang="en">IT Assistant</span> · Núcleo Engenharia Consultiva</h4>
+          <p>
+            <span lang="pt">Criei o Núcleo Boards, sistema interno de tarefas em produção na Oracle Cloud (Next.js, TypeScript, PostgreSQL, Docker, Playwright). Automações em Python, QGIS e dashboards Power BI.</span>
+            <span lang="en">Built Núcleo Boards, an internal task system in production on Oracle Cloud (Next.js, TypeScript, PostgreSQL, Docker, Playwright). Python automations, QGIS and Power BI dashboards.</span>
+          </p>
+        </div>
+        <div class="item">
+          <div class="when">2024 → 2026</div>
+          <h4>FIAP</h4>
+          <p><span lang="pt">Tecnólogo em Análise e Desenvolvimento de Sistemas</span><span lang="en">Associate degree in Systems Analysis and Development</span></p>
+        </div>
+        <div class="item">
+          <div class="when"><span lang="pt">antes</span><span lang="en">before</span></div>
+          <h4>Anhembi Morumbi</h4>
+          <p>Design Digital</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="stack">
+    <div class="container">
+      <h2 class="section-title reveal">Stack</h2>
+      <p class="section-sub reveal"><span lang="pt">O que uso no dia a dia</span><span lang="en">What I use day to day</span></p>
+      <div class="stack-grid">
+        <div class="card reveal"><h3>backend</h3><div class="chips"><span class="chip">Java 21</span><span class="chip">Spring Boot</span><span class="chip">Spring Security</span><span class="chip">JPA/Hibernate</span><span class="chip">REST</span><span class="chip">JWT</span></div></div>
+        <div class="card reveal"><h3><span lang="pt">mensageria · observabilidade</span><span lang="en">messaging · observability</span></h3><div class="chips"><span class="chip">RabbitMQ</span><span class="chip">WebSocket/STOMP</span><span class="chip">Prometheus</span><span class="chip">Grafana</span></div></div>
+        <div class="card reveal"><h3><span lang="pt">dados</span><span lang="en">data</span></h3><div class="chips"><span class="chip">PostgreSQL</span><span class="chip">SQL</span><span class="chip">Flyway</span><span class="chip">Python</span><span class="chip">Power BI</span><span class="chip">QGIS</span></div></div>
+        <div class="card reveal"><h3><span lang="pt">testes · entrega</span><span lang="en">testing · delivery</span></h3><div class="chips"><span class="chip">JUnit 5</span><span class="chip">Testcontainers</span><span class="chip">Playwright</span><span class="chip">Docker</span><span class="chip">GitHub Actions</span><span class="chip">Oracle Cloud</span></div></div>
+        <div class="card reveal"><h3>web</h3><div class="chips"><span class="chip">TypeScript</span><span class="chip">Next.js</span><span class="chip">React</span></div></div>
+        <div class="card reveal"><h3>mobile</h3><div class="chips"><span class="chip">Kotlin</span><span class="chip">Jetpack Compose</span><span class="chip">Room</span><span class="chip">Firebase</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Projetos</span><span lang="en">Projects</span></h2>
+      <p class="section-sub reveal"><span lang="pt">Clique para ver o raio-X: diagrama animado, código e testes.</span><span lang="en">Click to see the x-ray: animated diagram, code and tests.</span></p>
+      <div class="projects-grid">
+        <a class="card project-card reveal" href="projects/safepix-async.html">
+          <span class="tag">Java · RabbitMQ</span><h3>SafePix Async</h3>
+          <p><span lang="pt">Pix que não cobra duas vezes: fila assíncrona, idempotência, DLQ e métricas.</span><span lang="en">Pix that never charges twice: async queue, idempotency, DLQ and metrics.</span></p>
+          <span class="go">raio-x →</span>
+        </a>
+        <a class="card project-card reveal" href="projects/auditoria-pix.html">
+          <span class="tag">Java · Envers · AOP</span><h3>Auditoria PIX</h3>
+          <p><span lang="pt">Quem alterou, quando e de onde, seguindo a Resolução BCB 1/2020.</span><span lang="en">Who changed it, when and from where, following BCB Resolution 1/2020.</span></p>
+          <span class="go">raio-x →</span>
+        </a>
+        <a class="card project-card reveal" href="projects/estoque-reserva.html">
+          <span class="tag">Java · PostgreSQL</span><h3>Estoque Reserva</h3>
+          <p><span lang="pt">50 threads contra 1 unidade: lock otimista garante que só uma vence.</span><span lang="en">50 threads against 1 unit: optimistic locking makes sure only one wins.</span></p>
+          <span class="go">raio-x →</span>
+        </a>
+        <a class="card project-card reveal" href="projects/wtc-chat.html">
+          <span class="tag">Spring · Kotlin · WebSocket</span><h3>WTC CRM Chat</h3>
+          <p><span lang="pt">CRM com chat em tempo real para o WTC São Paulo (projeto FIAP).</span><span lang="en">CRM with real-time chat for WTC São Paulo (FIAP project).</span></p>
+          <span class="go">raio-x →</span>
+        </a>
+        <a class="card project-card reveal" href="projects/fluxo-android.html">
+          <span class="tag">Kotlin · Compose</span><h3>Fluxo</h3>
+          <p><span lang="pt">Finanças pessoais offline: notificações do banco viram lançamentos.</span><span lang="en">Offline personal finance: bank notifications become transactions.</span></p>
+          <span class="go">raio-x →</span>
+        </a>
+        <a class="card project-card reveal" href="projects/repforge.html">
+          <span class="tag">Kotlin · Room</span><h3>RepForge</h3>
+          <p><span lang="pt">App de treino de musculação: fichas, plano semanal e evolução, sem conta.</span><span lang="en">Strength training app: workouts, weekly plan and progress, no account.</span></p>
+          <span class="go">raio-x →</span>
+        </a>
+        <a class="card project-card reveal" href="projects/combustiveis.html">
+          <span class="tag">SQL · Python · Power BI</span><h3><span lang="pt">Painel de Combustíveis</span><span lang="en">Fuel Prices Dashboard</span></h3>
+          <p><span lang="pt">Preços da ANP no RJ: SQL, Python, modelo estrela e Power BI.</span><span lang="en">ANP prices in Rio: SQL, Python, star schema and Power BI.</span></p>
+          <span class="go">raio-x →</span>
+        </a>
+        <a class="card project-card reveal" href="projects/famel-svg.html">
+          <span class="tag">Python · GitHub Actions</span><h3>Famel-svg</h3>
+          <p><span lang="pt">Cartões SVG do perfil GitHub gerados e atualizados sozinhos.</span><span lang="en">GitHub profile SVG cards generated and updated automatically.</span></p>
+          <span class="go">raio-x →</span>
+        </a>
+        <a class="card project-card reveal" href="projects/brave-cli.html">
+          <span class="tag">Rust · CDP</span><h3>Brave CLI</h3>
+          <p><span lang="pt">Inspeciona e controla páginas do Brave por texto, sem screenshots.</span><span lang="en">Inspect and control Brave pages through text, no screenshots.</span></p>
+          <span class="go">raio-x →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="container reveal">
+      <h2 class="section-title"><span lang="pt">Contato</span><span lang="en">Contact</span></h2>
+      <p class="muted">
+        <span lang="pt">Procuro vaga de Desenvolvedor Backend Java, Android ou Dados/Automação Júnior. Remoto ou híbrido em São Paulo.</span>
+        <span lang="en">Looking for a Junior Backend Java, Android or Data/Automation role. Remote or hybrid in São Paulo.</span>
+      </p>
+      <div class="links">
+        <a class="btn solid" href="mailto:rafaelandradetanimoto@gmail.com">email</a>
+        <a class="btn" href="https://www.linkedin.com/in/rafaeltanimoto/" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn" href="https://github.com/Famel-svg" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 2026 Rafael Andrade Tanimoto · <span lang="pt">feito com HTML, CSS e JS puros</span><span lang="en">built with plain HTML, CSS and JS</span></footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
