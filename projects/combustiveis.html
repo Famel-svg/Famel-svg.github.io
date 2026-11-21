@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="pt-BR" data-lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel de Combustíveis · Rafael Tanimoto</title>
+  <meta name="description" content="Painel de Combustíveis: preços da ANP no RJ com Python, SQL, PostgreSQL e Power BI.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container">
+      <a class="brand" href="../index.html">~/rafael</a>
+      <div class="links">
+        <a href="../index.html#projects"><span lang="pt">projetos</span><span lang="en">projects</span></a>
+        <a href="../index.html#contact"><span lang="pt">contato</span><span lang="en">contact</span></a>
+      </div>
+      <button class="lang-toggle" aria-label="Trocar idioma / Switch language">EN</button>
+    </div>
+  </nav>
+
+  <header class="p-hero">
+    <div class="container">
+      <a class="back" href="../index.html#projects">← <span lang="pt">voltar aos projetos</span><span lang="en">back to projects</span></a>
+      <h1><span lang="pt">Painel de Combustíveis</span><span lang="en">Fuel Prices Dashboard</span></h1>
+      <div class="tagline"><span lang="pt">Preços de combustíveis no RJ: da planilha da ANP ao painel.</span><span lang="en">Fuel prices in Rio de Janeiro: from the ANP spreadsheet to the dashboard.</span></div>
+      <div class="chips" style="margin-top:16px"><span class="chip">Python</span> <span class="chip">pandas</span> <span class="chip">SQL</span> <span class="chip">PostgreSQL</span> <span class="chip">Power Query</span> <span class="chip">DAX</span> <span class="chip">Power BI</span></div>
+      <div class="meta">
+        <a class="btn solid" href="https://github.com/Famel-svg/combustiveis-sql-analytics" target="_blank" rel="noopener"><span lang="pt">GitHub · análise SQL</span><span lang="en">GitHub · SQL analysis</span> →</a>
+        <a class="btn" href="https://github.com/Famel-svg/painel-combustiveis-powerbi" target="_blank" rel="noopener"><span lang="pt">GitHub · painel Power BI</span><span lang="en">GitHub · Power BI dashboard</span> →</a>
+      </div>
+    </div>
+  </header>
+
+  <section style="padding-top:0">
+    <div class="container reveal">
+      <div class="problem">
+        <strong><span lang="pt">o problema</span><span lang="en">the problem</span></strong>
+        <p><span lang="pt">Quando abastecer com etanol compensa no bolso? A regra dos 70% diz que compensa quando o litro do etanol custa até 70% do preço da gasolina. O projeto usa essa regra como critério e aplica SQL a preços reais da ANP no Rio de Janeiro.</span><span lang="en">When does filling up with ethanol pay off? The 70% rule says it does when the ethanol price per litre is at most 70% of the gasoline price. The project uses this rule as a criterion and applies SQL to real ANP prices in Rio de Janeiro.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Raio-X</span><span lang="en">X-ray</span></h2>
+      <p class="section-sub reveal"><span lang="pt">Fluxo real dos dois repositórios: CSV da ANP, limpeza em Python, banco PostgreSQL com consultas SQL, e modelo estrela no Power BI.</span><span lang="en">Real flow across both repositories: ANP CSV, cleaning in Python, PostgreSQL with SQL queries, and a star schema in Power BI.</span></p>
+      <div class="diagram-wrap reveal">
+        <svg class="diagram" viewBox="0 0 960 380" role="img" aria-label="Fluxo: CSV da ANP, limpeza em Python, PostgreSQL, consultas SQL, amostra e modelo estrela no Power BI / Flow: ANP CSV, Python cleaning, PostgreSQL, SQL queries, sample and star schema in Power BI">
+          <!-- linha 1: pipeline principal -->
+          <path class="edge" d="M200 58 H250"/>
+          <path class="flow" d="M200 58 H250"/>
+          <circle class="packet" r="5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M200 58 H250"/></circle>
+
+          <path class="edge" d="M430 58 H480"/>
+          <path class="flow" d="M430 58 H480"/>
+          <circle class="packet" r="5"><animateMotion dur="2.4s" begin="0.8s" repeatCount="indefinite" path="M430 58 H480"/></circle>
+
+          <path class="edge" d="M650 58 H700"/>
+          <path class="flow" d="M650 58 H700"/>
+          <circle class="packet" r="5"><animateMotion dur="2.4s" begin="1.6s" repeatCount="indefinite" path="M650 58 H700"/></circle>
+
+          <!-- ligação para a amostra -->
+          <path class="edge" d="M340 86 V150"/>
+          <path class="flow blue" d="M340 86 V150"/>
+          <circle class="packet" r="5"><animateMotion dur="2s" repeatCount="indefinite" path="M340 86 V150"/></circle>
+          <text class="label-sm" x="350" y="122" lang="pt">CSV limpo</text>
+          <text class="label-sm" x="350" y="122" lang="en">clean CSV</text>
+
+          <!-- ligação para o modelo estrela -->
+          <path class="edge" d="M340 206 V270 H476"/>
+          <path class="flow blue" d="M340 206 V270 H476"/>
+          <circle class="packet" r="5"><animateMotion dur="3s" repeatCount="indefinite" path="M340 206 V270 H476"/></circle>
+          <text class="label-sm" x="350" y="290">5 CSVs</text>
+
+          <!-- nós da linha 1 -->
+          <g class="node accent">
+            <rect x="20" y="30" width="180" height="56" rx="10"/>
+            <text x="110" y="54" text-anchor="middle">ANP · CSV</text>
+            <text class="label-sm" x="110" y="72" text-anchor="middle" lang="pt">dados abertos mensais</text>
+            <text class="label-sm" x="110" y="72" text-anchor="middle" lang="en">monthly open data</text>
+          </g>
+          <g class="node">
+            <rect x="250" y="30" width="180" height="56" rx="10"/>
+            <text x="340" y="54" text-anchor="middle">Python · limpeza</text>
+            <text class="label-sm" x="340" y="72" text-anchor="middle" lang="pt">filtro RJ, validação</text>
+            <text class="label-sm" x="340" y="72" text-anchor="middle" lang="en">RJ filter, validation</text>
+          </g>
+          <g class="node">
+            <rect x="480" y="30" width="170" height="56" rx="10"/>
+            <text x="565" y="54" text-anchor="middle">PostgreSQL</text>
+            <text class="label-sm" x="565" y="72" text-anchor="middle">precos_rj</text>
+          </g>
+          <g class="node">
+            <rect x="700" y="30" width="240" height="56" rx="10"/>
+            <text x="820" y="54" text-anchor="middle" lang="pt">SQL · consultas</text>
+            <text x="820" y="54" text-anchor="middle" lang="en">SQL · queries</text>
+            <text class="label-sm" x="820" y="72" text-anchor="middle">CTE, LAG, RANK</text>
+          </g>
+
+          <!-- nó da linha 2 -->
+          <g class="node">
+            <rect x="240" y="150" width="200" height="56" rx="10"/>
+            <text x="340" y="174" text-anchor="middle">Python · amostra</text>
+            <text class="label-sm" x="340" y="192" text-anchor="middle" lang="pt">5 municípios, jan–mar 2025</text>
+            <text class="label-sm" x="340" y="192" text-anchor="middle" lang="en">5 cities, Jan–Mar 2025</text>
+          </g>
+
+          <!-- Power BI: contêiner com o modelo estrela e o painel -->
+          <g class="node warn">
+            <rect x="460" y="118" width="490" height="242" rx="12"/>
+            <text class="label-sm" x="476" y="140" lang="pt">Power BI · modelo e painel</text>
+            <text class="label-sm" x="476" y="140" lang="en">Power BI · model and dashboard</text>
+          </g>
+
+          <!-- modelo estrela: fato no centro, quatro dimensões -->
+          <path class="edge" d="M700 230 V248"/>
+          <path class="edge" d="M594 270 H640"/>
+          <path class="edge" d="M760 270 H800"/>
+          <path class="edge" d="M700 292 V316"/>
+          <path class="flow" d="M700 230 V248"/>
+          <path class="flow" d="M594 270 H640"/>
+          <path class="flow" d="M760 270 H800"/>
+          <path class="flow" d="M700 292 V316"/>
+          <text class="label-sm" x="476" y="236" lang="pt">modelo estrela</text>
+          <text class="label-sm" x="476" y="236" lang="en">star schema</text>
+
+          <g class="node accent">
+            <rect x="640" y="248" width="120" height="44" rx="8"/>
+            <text x="700" y="274" text-anchor="middle">fato_preco</text>
+          </g>
+          <g class="node">
+            <rect x="640" y="198" width="120" height="32" rx="8"/>
+            <text x="700" y="218" text-anchor="middle">dim_data</text>
+          </g>
+          <g class="node">
+            <rect x="476" y="254" width="118" height="32" rx="8"/>
+            <text x="535" y="274" text-anchor="middle">dim_produto</text>
+          </g>
+          <g class="node">
+            <rect x="800" y="254" width="130" height="32" rx="8"/>
+            <text x="865" y="274" text-anchor="middle">dim_localidade</text>
+          </g>
+          <g class="node">
+            <rect x="640" y="316" width="120" height="32" rx="8"/>
+            <text x="700" y="336" text-anchor="middle">dim_revenda</text>
+          </g>
+        </svg>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><div>
+          <h4><span lang="pt">Coleta: CSVs mensais da ANP</span><span lang="en">Collection: ANP monthly CSVs</span></h4>
+          <p><span lang="pt">baixar_anp.py baixa os arquivos de gasolina, etanol e diesel de 2023 a 2025. Os arquivos são nacionais; o recorte do RJ fica para a limpeza.</span><span lang="en">baixar_anp.py downloads the gasoline, ethanol and diesel files for 2023 to 2025. The files are national; the RJ filter happens in the cleaning step.</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">Limpeza em Python</span><span lang="en">Cleaning in Python</span></h4>
+          <p><span lang="pt">O notebook filtra o RJ, valida preço e data, remove duplicatas e outliers. Resultado: 2.608.591 linhas lidas viraram 147.142 coletas.</span><span lang="en">The notebook filters RJ, validates price and date, and removes duplicates and outliers. Result: 2,608,591 rows read became 147,142 price records.</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">Carga no PostgreSQL</span><span lang="en">Loading into PostgreSQL</span></h4>
+          <p><span lang="pt">carga_postgres.py recria a tabela precos_rj e carrega o CSV com COPY. Cada linha é uma coleta de um produto em um posto.</span><span lang="en">carga_postgres.py recreates the precos_rj table and loads the CSV with COPY. Each row is one product price collected at one station.</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">Consultas SQL</span><span lang="en">SQL queries</span></h4>
+          <p><span lang="pt">Cinco consultas em sql/: média semanal em CTE, variação com LAG, média móvel de 4 semanas, ranking com RANK e a regra dos 70%. Achado: o etanol ficou até 70% da gasolina em 326 de 4.210 pares município-semana (7,7%).</span><span lang="en">Five queries in sql/: weekly average in a CTE, change with LAG, 4-week moving average, ranking with RANK, and the 70% rule. Finding: ethanol was at most 70% of gasoline in 326 of 4,210 municipality-week pairs (7.7%).</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">Modelo estrela</span><span lang="en">Star schema</span></h4>
+          <p><span lang="pt">gerar_amostra.py cria uma amostra com a tabela fato_preco e quatro dimensões (data, produto, município, revenda): 5.009 linhas, de jan a mar de 2025, em 5 municípios.</span><span lang="en">gerar_amostra.py builds a sample with the fato_preco fact table and four dimensions (date, product, municipality, station): 5,009 rows, Jan to Mar 2025, 5 municipalities.</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">Painel no Power BI</span><span lang="en">Power BI dashboard</span></h4>
+          <p><span lang="pt">Power Query carrega as cinco tabelas e seis medidas DAX calculam preço médio, variações, média móvel, ranking e a fração etanol sobre gasolina. As medidas estão documentadas; segundo o README, o código ainda não foi executado no Power BI Desktop.</span><span lang="en">Power Query loads the five tables and six DAX measures compute average price, changes, moving average, ranking and the ethanol-to-gasoline share. The measures are documented; according to the README, the code has not yet been run in Power BI Desktop.</span></p>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Código que importa</span><span lang="en">Code that matters</span></h2>
+
+      <div class="code-block reveal">
+        <div class="bar">combustiveis-sql-analytics/notebooks/01_limpeza.ipynb</div>
+        <pre><code class="language-python">valor = rj["Valor de Venda"].str.strip()
+padrao = valor.str.match(r"^\d+,\d{1,2}$")
+# ...
+n2 = len(rj)
+rj = rj[padrao].copy()
+rj["preco"] = rj["Valor de Venda"].str.replace(",", ".", regex=False).astype(float)
+registra("Valor sem vírgula decimal", n2, len(rj),
+         "Valor como '5' é ambíguo (R$ 5,00 ou truncado); descartado")
+# ...
+n5 = len(rj)
+rj = rj[(rj["preco"] &gt;= 2) &amp; (rj["preco"] &lt;= 12)].copy()
+registra("Outlier de domínio", n5, len(rj), "Preço fora de R$ 2,00 a R$ 12,00 por litro")</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">Um preço só entra se tiver vírgula decimal, como em 5,49. Valores como "5" são ambíguos e foram descartados: 45 linhas nessa etapa. A faixa de R$ 2 a 12 vem logo depois.</span><span lang="en">A price is kept only if it has a decimal comma, as in 5,49. Values such as "5" are ambiguous and were dropped: 45 rows at this step. The R$ 2 to 12 range comes right after.</span></p>
+
+      <div class="code-block reveal">
+        <div class="bar">combustiveis-sql-analytics/sql/05_regra_70_etanol.sql</div>
+        <pre><code class="language-sql">-- Query 5: em quais município-semanas o etanol compensa pela regra de 70%.
+-- Compara o preço médio semanal do etanol com o da gasolina no mesmo município e semana.
+-- Compensa quando etanol &lt;= 70% da gasolina. Só entram semanas com os dois produtos.
+-- Achado descritivo: não prova causa. Ver README, seção Limites.
+WITH semanal AS (
+    SELECT
+        municipio,
+        produto,
+        ano_iso,
+        semana,
+        MIN(data)            AS inicio_semana,
+        ROUND(AVG(preco), 3) AS preco_medio
+    FROM precos_rj
+    WHERE produto IN ('ETANOL', 'GASOLINA')
+    GROUP BY municipio, produto, ano_iso, semana
+),
+par AS (
+    SELECT
+        municipio,
+        ano_iso,
+        semana,
+        MIN(inicio_semana) AS inicio_semana,
+        MAX(CASE WHEN produto = 'ETANOL'   THEN preco_medio END) AS etanol,
+        MAX(CASE WHEN produto = 'GASOLINA' THEN preco_medio END) AS gasolina
+    FROM semanal
+    GROUP BY municipio, ano_iso, semana
+    HAVING COUNT(DISTINCT produto) = 2
+)
+SELECT
+    municipio,
+    inicio_semana,
+    etanol,
+    gasolina,
+    ROUND(100.0 * etanol / gasolina, 1) AS relacao_pct,
+    (etanol &lt;= 0.70 * gasolina)         AS etanol_compensa
+FROM par
+ORDER BY etanol_compensa DESC, relacao_pct ASC, municipio, inicio_semana;</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">A consulta mostra em quais município-semanas o etanol ficou até 70% da gasolina. O resultado é descritivo: não prova causa, como o README registra na seção de limites.</span><span lang="en">The query shows the municipality-weeks where ethanol was at most 70% of gasoline. The result is descriptive: it does not prove cause, as the README notes in its limits section.</span></p>
+
+      <div class="code-block reveal">
+        <div class="bar">combustiveis-sql-analytics/sql/04_ranking_municipios_rank.sql</div>
+        <pre><code class="language-sql">-- Query 4: ranking de municípios por preço médio do período, com RANK.
+-- RANK dá a mesma posição para empates e pula o número seguinte (1, 1, 3).
+-- Ranking 1 = município mais barato para aquele produto.
+WITH media_periodo AS (
+    SELECT
+        municipio,
+        produto,
+        ROUND(AVG(preco), 3) AS preco_medio,
+        COUNT(DISTINCT ano_iso * 100 + semana) AS n_semanas  -- chave única da semana ISO
+    FROM precos_rj
+    GROUP BY municipio, produto
+)
+SELECT
+    produto,
+    municipio,
+    preco_medio,
+    n_semanas,
+    RANK() OVER (
+        PARTITION BY produto
+        ORDER BY preco_medio ASC
+    ) AS posicao_mais_barato
+FROM media_periodo
+ORDER BY produto, posicao_mais_barato, municipio;</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">O ranking usa média simples por município. Um município com poucas coletas pode ter média distorcida; o README recomenda usar o ranking como ponto de partida.</span><span lang="en">The ranking uses a simple average per municipality. A municipality with few records can have a distorted average; the README suggests using the ranking as a starting point.</span></p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Prova</span><span lang="en">Proof</span></h2>
+      <div class="proof">
+        <div class="card reveal"><div class="big"><span lang="pt">147.142</span><span lang="en">147,142</span></div><p class="muted"><span lang="pt">coletas de preço no RJ após a limpeza, de 2023 a 2025, em 32 municípios</span><span lang="en">price records in RJ after cleaning, 2023 to 2025, across 32 municipalities</span></p></div>
+        <div class="card reveal"><div class="big"><span lang="pt">2.608.591</span><span lang="en">2,608,591</span></div><p class="muted"><span lang="pt">linhas lidas dos arquivos nacionais da ANP, antes do recorte RJ e da limpeza</span><span lang="en">rows read from the national ANP files, before the RJ filter and cleaning</span></p></div>
+        <div class="card reveal"><div class="big"><span lang="pt">7,7%</span><span lang="en">7.7%</span></div><p class="muted"><span lang="pt">dos pares município-semana com etanol e gasolina (326 de 4.210) em que o etanol ficou até 70% da gasolina</span><span lang="en">of municipality-week pairs with both ethanol and gasoline (326 of 4,210) where ethanol was at most 70% of gasoline</span></p></div>
+        <div class="card reveal"><div class="big"><span lang="pt">16,9%</span><span lang="en">16.9%</span></div><p class="muted"><span lang="pt">das semanas com etanol até 70% da gasolina em 2024, contra 4,6% em 2023 e 1,1% em 2025: o ano pesa mais que o município</span><span lang="en">of weeks with ethanol at most 70% of gasoline in 2024, versus 4.6% in 2023 and 1.1% in 2025: the year matters more than the municipality</span></p></div>
+        <div class="card reveal"><div class="big"><span lang="pt">5.009</span><span lang="en">5,009</span></div><p class="muted"><span lang="pt">linhas na amostra do modelo estrela: jan a mar de 2025, 5 municípios</span><span lang="en">rows in the star schema sample: Jan to Mar 2025, 5 municipalities</span></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container next-prev">
+      <a class="btn" href="repforge.html">← RepForge</a>
+      <a class="btn" href="famel-svg.html">Famel-svg →</a>
+    </div>
+  </section>
+
+  <footer>© 2026 Rafael Andrade Tanimoto</footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="../js/main.js"></script>
+</body>
+</html>
