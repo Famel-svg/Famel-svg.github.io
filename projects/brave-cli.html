@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="pt-BR" data-lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Brave CLI · Rafael Tanimoto</title>
+  <meta name="description" content="CLI em Rust para inspecionar páginas do Brave por CDP, sem capturas de tela. / Rust CLI to inspect Brave pages over CDP, no screenshots.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container">
+      <a class="brand" href="../index.html">~/rafael</a>
+      <div class="links">
+        <a href="../index.html#projects"><span lang="pt">projetos</span><span lang="en">projects</span></a>
+        <a href="../index.html#contact"><span lang="pt">contato</span><span lang="en">contact</span></a>
+      </div>
+      <button class="lang-toggle" aria-label="Trocar idioma / Switch language">EN</button>
+    </div>
+  </nav>
+
+  <header class="p-hero">
+    <div class="container">
+      <a class="back" href="../index.html#projects">← <span lang="pt">voltar aos projetos</span><span lang="en">back to projects</span></a>
+      <h1>Brave CLI</h1>
+      <div class="tagline"><span lang="pt">Inspeção de páginas do Brave por CDP, sem capturas de tela</span><span lang="en">Brave page inspection over CDP, no screenshots</span></div>
+      <div class="chips" style="margin-top:16px"><span class="chip">Rust</span><span class="chip">clap</span><span class="chip">CDP</span><span class="chip">chromiumoxide</span><span class="chip">Manifest V3</span></div>
+      <div class="meta">
+        <a class="btn solid" href="https://github.com/Famel-svg/Brave_CLI" target="_blank" rel="noopener">GitHub →</a>
+      </div>
+    </div>
+  </header>
+
+  <section style="padding-top:0">
+    <div class="container reveal">
+      <div class="problem">
+        <strong><span lang="pt">o problema</span><span lang="en">the problem</span></strong>
+        <p><span lang="pt">Um agente que ajuda na sua pesquisa precisa ler a aba que você já está usando no Brave, sem criar um perfil novo nem copiar o seu. O Brave CLI lê texto, controles visíveis e a árvore de acessibilidade, e redige campos sensíveis antes de imprimir.</span><span lang="en">An agent helping with your research needs to read the tab you already have open in Brave, without creating a new profile or copying yours. Brave CLI reads text, visible controls and the accessibility tree, and redacts sensitive fields before printing.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Raio-X</span><span lang="en">X-ray</span></h2>
+      <p class="section-sub reveal"><span lang="pt">Comando, CLI, transporte, página e saída. Só a ponte de extensão é experimental.</span><span lang="en">Command, CLI, transport, page and output. Only the extension bridge is experimental.</span></p>
+      <div class="diagram-wrap reveal">
+        <svg class="diagram" viewBox="0 0 960 440" role="img" aria-label="Diagrama: comando no terminal, CLI brave-cli, transporte CDP direto ou ponte de extensão experimental, página do Brave, snapshot e saída em texto que volta ao terminal">
+          <!-- 1. terminal -->
+          <g class="node accent">
+            <rect x="20" y="155" width="150" height="60" rx="10"/>
+            <text x="95" y="180" text-anchor="middle" style="font-size:12px">$ brave-cli inspect</text>
+            <text lang="pt" class="label-sm" x="95" y="200" text-anchor="middle">comando no terminal</text>
+            <text lang="en" class="label-sm" x="95" y="200" text-anchor="middle">terminal command</text>
+          </g>
+          <!-- 2. CLI -->
+          <g class="node">
+            <rect x="200" y="155" width="170" height="60" rx="10"/>
+            <text x="285" y="180" text-anchor="middle">brave-cli</text>
+            <text lang="pt" class="label-sm" x="285" y="200" text-anchor="middle">argumentos (clap)</text>
+            <text lang="en" class="label-sm" x="285" y="200" text-anchor="middle">arguments (clap)</text>
+          </g>
+          <!-- 3a. CDP direct -->
+          <g class="node accent">
+            <rect x="400" y="60" width="260" height="76" rx="10"/>
+            <text lang="pt" x="530" y="86" text-anchor="middle">CDP direto (padrão)</text>
+            <text lang="en" x="530" y="86" text-anchor="middle">Direct CDP (default)</text>
+            <text x="530" y="106" text-anchor="middle" class="label-sm" style="font-size:11px">Browser::connect (WebSocket)</text>
+            <text lang="pt" class="label-sm" x="530" y="124" text-anchor="middle">porta 9222 em 127.0.0.1</text>
+            <text lang="en" class="label-sm" x="530" y="124" text-anchor="middle">port 9222 on 127.0.0.1</text>
+          </g>
+          <!-- 3b. extension bridge (experimental) -->
+          <g class="node warn">
+            <rect x="400" y="250" width="260" height="76" rx="10"/>
+            <text lang="pt" x="530" y="276" text-anchor="middle" style="font-size:12px">Ponte de extensão (experimental)</text>
+            <text lang="en" x="530" y="276" text-anchor="middle" style="font-size:12px">Extension bridge (experimental)</text>
+            <text x="530" y="296" text-anchor="middle" class="label-sm" style="font-size:11px">WebSocket · 127.0.0.1:9229</text>
+            <text lang="pt" class="label-sm" x="530" y="314" text-anchor="middle">rota não validada ponta a ponta</text>
+            <text lang="en" class="label-sm" x="530" y="314" text-anchor="middle">route not validated end to end</text>
+          </g>
+          <!-- 4. page -->
+          <g class="node">
+            <rect x="720" y="150" width="210" height="70" rx="10"/>
+            <text lang="pt" x="825" y="176" text-anchor="middle" style="font-size:12px">Página (aba escolhida)</text>
+            <text lang="en" x="825" y="176" text-anchor="middle" style="font-size:12px">Page (chosen tab)</text>
+            <text x="825" y="198" text-anchor="middle" class="label-sm" style="font-size:11px">target.type == page</text>
+          </g>
+          <!-- 5. snapshot -->
+          <g class="node">
+            <rect x="720" y="268" width="210" height="60" rx="10"/>
+            <text lang="pt" x="825" y="292" text-anchor="middle" style="font-size:12px">snapshot: DOM + árvore AX</text>
+            <text lang="en" x="825" y="292" text-anchor="middle" style="font-size:12px">snapshot: DOM + AX tree</text>
+            <text lang="pt" class="label-sm" x="825" y="312" text-anchor="middle">sem captura de tela</text>
+            <text lang="en" class="label-sm" x="825" y="312" text-anchor="middle">no screenshot</text>
+          </g>
+          <!-- 6. compact output -->
+          <g class="node accent">
+            <rect x="720" y="356" width="210" height="60" rx="10"/>
+            <text lang="pt" x="825" y="380" text-anchor="middle" style="font-size:12px">saída compacta</text>
+            <text lang="en" x="825" y="380" text-anchor="middle" style="font-size:12px">compact output</text>
+            <text x="825" y="400" text-anchor="middle" class="label-sm" style="font-size:11px">[role] nome seletor</text>
+          </g>
+
+          <!-- edges (static) + animated flow -->
+          <path class="edge" d="M170 185 H200"/>
+          <path class="flow" d="M170 185 H200"/>
+          <path class="edge" d="M370 185 H385 V98 H400"/>
+          <path class="flow blue" d="M370 185 H385 V98 H400"/>
+          <path class="edge" d="M370 185 H385 V288 H400"/>
+          <path class="flow warn" d="M370 185 H385 V288 H400"/>
+          <path class="edge" d="M660 98 H690 V185 H720"/>
+          <path class="flow blue" d="M660 98 H690 V185 H720"/>
+          <path class="edge" d="M660 288 H690 V185 H720"/>
+          <path class="flow warn" d="M660 288 H690 V185 H720"/>
+          <path class="edge" d="M825 220 V268"/>
+          <path class="flow" d="M825 220 V268"/>
+          <path class="edge" d="M825 328 V356"/>
+          <path class="flow" d="M825 328 V356"/>
+          <path class="edge" d="M720 386 H95 V215"/>
+          <path class="flow blue" d="M720 386 H95 V215"/>
+
+          <!-- packets -->
+          <circle class="packet" r="5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M170 185 H200"/></circle>
+          <circle class="packet" r="5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M370 185 H385 V98 H400"/></circle>
+          <circle class="packet" r="5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M660 98 H690 V185 H720"/></circle>
+          <circle class="packet" r="5"><animateMotion dur="2s" repeatCount="indefinite" path="M825 220 V268"/></circle>
+          <circle class="packet" r="5"><animateMotion dur="2s" repeatCount="indefinite" path="M825 328 V356"/></circle>
+          <circle class="packet" r="5"><animateMotion dur="3.5s" repeatCount="indefinite" path="M720 386 H95 V215"/></circle>
+
+          <!-- return label -->
+          <text lang="pt" class="label-sm" x="110" y="408">texto e árvore AX voltam ao terminal</text>
+          <text lang="en" class="label-sm" x="110" y="408">text and AX tree return to the terminal</text>
+        </svg>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><div><h4><span lang="pt">Comando</span><span lang="en">Command</span></h4><p><span lang="pt">O terminal executa <code>brave-cli inspect</code>. O clap lê os argumentos em um enum de subcomandos (<code>src-rust/main.rs</code>).</span><span lang="en">The terminal runs <code>brave-cli inspect</code>. clap parses the arguments into a subcommand enum (<code>src-rust/main.rs</code>).</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Transporte</span><span lang="en">Transport</span></h4><p><span lang="pt">O <code>inspect</code> usa o endpoint CDP configurado, por padrão <code>http://127.0.0.1:9222</code>. A ponte de extensão é outro caminho, exposto por <code>brave-cli mcp --extension-id</code>, e segue experimental.</span><span lang="en">By default <code>inspect</code> uses the configured CDP endpoint, <code>http://127.0.0.1:9222</code>. The extension bridge is a separate path, exposed by <code>brave-cli mcp --extension-id</code>, and remains experimental.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Aba</span><span lang="en">Tab</span></h4><p><span lang="pt">A função <code>connect</code> lista os alvos do tipo page e identifica a aba ativa pela URL e pelo título. Se não houver correspondência única, a CLI para com erro em vez de adivinhar.</span><span lang="en">The <code>connect</code> function lists page targets and identifies the active tab by URL and title. If there is no single match, the CLI stops with an error instead of guessing.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Snapshot</span><span lang="en">Snapshot</span></h4><p><span lang="pt">O script de página coleta título, URL, viewport, texto visível e controles visíveis com retângulos. O <code>Accessibility.getFullAXTree</code> traz papéis e nomes, limitado por <code>max_nodes</code> (teto de 1200).</span><span lang="en">The page script collects title, URL, viewport, visible text and visible controls with rectangles. <code>Accessibility.getFullAXTree</code> adds roles and names, capped by <code>max_nodes</code> (ceiling of 1200).</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Redação</span><span lang="en">Redaction</span></h4><p><span lang="pt">Campos de senha e valores que parecem segredos viram <code>[REDACTED]</code>. Valores de controles de formulário não entram na saída.</span><span lang="en">Password fields and values that look like secrets become <code>[REDACTED]</code>. Form control values are not included in the output.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Saída</span><span lang="en">Output</span></h4><p><span lang="pt">Por padrão a saída é texto compacto: título, URL, viewport, foco, texto e uma linha por controle. <code>--format json</code> e <code>--format dom</code> mudam a forma da saída.</span><span lang="en">By default the output is compact text: title, URL, viewport, focus, text and one line per control. <code>--format json</code> and <code>--format dom</code> change the output shape.</span></p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Código que importa</span><span lang="en">Code that matters</span></h2>
+      <div class="code-block reveal">
+        <div class="bar">src-rust/main.rs · connect</div>
+        <pre><code class="language-rust">async fn connect(cdp: &amp;str) -&gt; Result&lt;(Browser, Page)&gt; {
+    let (mut browser, mut handler) = Browser::connect(cdp)
+        .await
+        .context("cannot connect to Brave CDP endpoint")?;
+    tokio::spawn(async move { while handler.next().await.is_some() {} });
+    let targets = browser
+        .fetch_targets()
+        .await
+        .context("cannot discover open browser tabs")?;
+    let pages: Vec&lt;_&gt; = targets
+        .into_iter()
+        .filter(|target| target.r#type == "page")
+        .collect();
+    if pages.is_empty() {
+        bail!("CDP endpoint has no inspectable page targets");
+    }</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">Conexão com Browser::connect no endpoint CDP informado, depois filtro dos alvos do tipo page. Sem página, a CLI falha com uma mensagem clara.</span><span lang="en">Connection with Browser::connect to the given CDP endpoint, then a filter that keeps only page targets. With no page, the CLI fails with a clear message.</span></p>
+
+      <div class="code-block reveal">
+        <div class="bar">src-rust/main.rs · validate_loopback_cdp_url</div>
+        <pre><code class="language-rust">fn validate_loopback_cdp_url(value: &amp;str) -&gt; Result&lt;()&gt; {
+    let endpoint = url::Url::parse(value).context("invalid CDP URL")?;
+    let loopback_host = match endpoint.host() {
+        Some(url::Host::Ipv4(address)) =&gt; address.is_loopback(),
+        Some(url::Host::Ipv6(address)) =&gt; address.is_loopback(),
+        _ =&gt; false,
+    };
+    if endpoint.scheme() != "http"
+        || !loopback_host
+        || endpoint.port().is_none()
+        || !matches!(endpoint.path(), "/" | "")
+        || endpoint.query().is_some()
+        || endpoint.fragment().is_some()
+        || !endpoint.username().is_empty()
+        || endpoint.password().is_some()
+    {
+        bail!("direct CDP endpoint must be an http URL with explicit port on loopback only");
+    }
+    Ok(())
+}
+</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">Guarda do modo mcp --cdp-url: aceita só http em um IP de loopback, com porta explícita e sem caminho, query, fragmento ou credenciais. A rota inspect não passa por esta função.</span><span lang="en">Guard for the mcp --cdp-url mode: accepts only http on a loopback IP, with an explicit port and no path, query, fragment or credentials. The inspect route does not go through this function.</span></p>
+
+      <div class="code-block reveal">
+        <div class="bar">README.md · exemplo de uso</div>
+        <pre><code class="language-bash">brave-cli inspect
+brave-cli inspect --format json --max-nodes 800
+brave-cli inspect --format dom</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">Exemplos do README. A saída padrão é texto; --format json e --format dom mudam o formato, e --max-nodes limita a árvore de acessibilidade (padrão 500, teto 1200).</span><span lang="en">Examples from the README. The default output is text; --format json and --format dom change the format, and --max-nodes caps the accessibility tree (default 500, ceiling 1200).</span></p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Prova</span><span lang="en">Proof</span></h2>
+      <div class="proof">
+        <div class="card reveal"><div class="big">14</div><p class="muted"><span lang="pt">funções de teste em src-rust/main.rs (#[test] e #[tokio::test])</span><span lang="en">test functions in src-rust/main.rs (#[test] and #[tokio::test])</span></p></div>
+        <div class="card reveal"><div class="big">1996</div><p class="muted"><span lang="pt">linhas no src-rust/main.rs, o arquivo único da CLI Rust</span><span lang="en">lines in src-rust/main.rs, the single file of the Rust CLI</span></p></div>
+        <div class="card reveal"><div class="big">1200</div><p class="muted"><span lang="pt">teto de nós para a árvore de acessibilidade e os elementos visíveis</span><span lang="en">node ceiling for the accessibility tree and visible elements</span></p></div>
+        <div class="card reveal"><div class="big">2</div><p class="muted"><span lang="pt">transportes: CDP direto em loopback e ponte de extensão (experimental)</span><span lang="en">transports: direct CDP on loopback and extension bridge (experimental)</span></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container next-prev">
+      <a class="btn" href="famel-svg.html">← Famel-svg</a>
+      <a class="btn" href="safepix-async.html">SafePix Async →</a>
+    </div>
+  </section>
+
+  <footer>© 2026 Rafael Andrade Tanimoto</footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="../js/main.js"></script>
+</body>
+</html>
