@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="pt-BR" data-lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Famel-svg · Rafael Tanimoto</title>
+  <meta name="description" content="Gerador dos cartões SVG do perfil do GitHub, atualizados por GitHub Actions todo dia.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container">
+      <a class="brand" href="../index.html">~/rafael</a>
+      <div class="links">
+        <a href="../index.html#projects"><span lang="pt">projetos</span><span lang="en">projects</span></a>
+        <a href="../index.html#contact"><span lang="pt">contato</span><span lang="en">contact</span></a>
+      </div>
+      <button class="lang-toggle" aria-label="Trocar idioma / Switch language">EN</button>
+    </div>
+  </nav>
+
+  <header class="p-hero">
+    <div class="container">
+      <a class="back" href="../index.html#projects">← <span lang="pt">voltar aos projetos</span><span lang="en">back to projects</span></a>
+      <h1>Famel-svg</h1>
+      <div class="tagline"><span lang="pt">Cartões do perfil do GitHub que se atualizam sozinhos</span><span lang="en">GitHub profile cards that update themselves</span></div>
+      <div class="chips" style="margin-top:16px"><span class="chip">Python</span> <span class="chip">GitHub Actions</span> <span class="chip">GraphQL</span> <span class="chip">SVG</span></div>
+      <div class="meta">
+        <a class="btn solid" href="https://github.com/Famel-svg/Famel-svg" target="_blank" rel="noopener">GitHub →</a>
+      </div>
+    </div>
+  </header>
+
+  <section style="padding-top:0">
+    <div class="container reveal">
+      <div class="problem">
+        <strong><span lang="pt">o problema</span><span lang="en">the problem</span></strong>
+        <p><span lang="pt">Os cartões de terceiros dependiam de um serviço público externo. Este gerador produz os SVGs dentro do próprio repositório, com dados da API do GitHub, e roda todo dia.</span><span lang="en">Third-party cards depended on an external public service. This generator builds the SVGs inside the repository, from the GitHub API, and runs every day.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Raio-X</span><span lang="en">X-ray</span></h2>
+      <p class="section-sub reveal"><span lang="pt">Pipeline diário, da agenda do GitHub Actions até o README. A linha de baixo é o workflow separado de contribuições.</span><span lang="en">Daily pipeline, from the GitHub Actions schedule to the README. The bottom row is the separate contributions workflow.</span></p>
+      <div class="diagram-wrap reveal">
+        <svg class="diagram" viewBox="0 0 960 420" role="img" aria-label="Pipeline diário: cron, fetch, escolha do evento, render, commit e README / Daily pipeline: cron, fetch, event pick, render, commit and README">
+          <!-- linha 1: cron -> build_cards.py -> fetch -> evento -->
+          <path class="edge" d="M220 82 H253"/><path class="flow" d="M220 82 H253"/>
+          <circle class="packet" r="5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M220 82 H253"/></circle>
+          <path class="edge" d="M453 82 H486"/><path class="flow" d="M453 82 H486"/>
+          <circle class="packet" r="5"><animateMotion dur="2.4s" begin="0.4s" repeatCount="indefinite" path="M453 82 H486"/></circle>
+          <path class="edge" d="M686 82 H719"/><path class="flow" d="M686 82 H719"/>
+          <circle class="packet" r="5"><animateMotion dur="2.4s" begin="0.8s" repeatCount="indefinite" path="M686 82 H719"/></circle>
+
+          <g class="node accent"><rect x="20" y="50" width="200" height="64" rx="10"/>
+            <text x="120" y="77" text-anchor="middle">GitHub Actions</text>
+            <text lang="pt" class="label-sm" x="120" y="98" text-anchor="middle">cron diário · 06:00 UTC</text>
+            <text lang="en" class="label-sm" x="120" y="98" text-anchor="middle">daily cron · 06:00 UTC</text></g>
+          <g class="node"><rect x="253" y="50" width="200" height="64" rx="10"/>
+            <text x="353" y="77" text-anchor="middle">build_cards.py</text>
+            <text lang="pt" class="label-sm" x="353" y="98" text-anchor="middle">função main()</text>
+            <text lang="en" class="label-sm" x="353" y="98" text-anchor="middle">main() function</text></g>
+          <g class="node"><rect x="486" y="50" width="200" height="64" rx="10"/>
+            <text lang="pt" x="586" y="77" text-anchor="middle">buscar dados</text>
+            <text lang="en" x="586" y="77" text-anchor="middle">fetch data</text>
+            <text lang="pt" class="label-sm" x="586" y="98" text-anchor="middle">GraphQL: stats, linguagens</text>
+            <text lang="en" class="label-sm" x="586" y="98" text-anchor="middle">GraphQL: stats, languages</text></g>
+          <g class="node warn"><rect x="719" y="50" width="200" height="64" rx="10"/>
+            <text x="819" y="77" text-anchor="middle">festive_event()</text>
+            <text lang="pt" class="label-sm" x="819" y="98" text-anchor="middle">data festiva ou sorteio</text>
+            <text lang="en" class="label-sm" x="819" y="98" text-anchor="middle">festive date or random draw</text></g>
+
+          <!-- ligação vertical -->
+          <path class="edge" d="M819 114 V190"/><path class="flow warn" d="M819 114 V190"/>
+          <circle class="packet" r="5"><animateMotion dur="2s" repeatCount="indefinite" path="M819 114 V190"/></circle>
+
+          <!-- linha 2: render -> arquivos -> commit -> README -->
+          <path class="edge" d="M719 222 H686"/><path class="flow" d="M719 222 H686"/>
+          <circle class="packet" r="5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M719 222 H686"/></circle>
+          <path class="edge" d="M486 222 H453"/><path class="flow" d="M486 222 H453"/>
+          <circle class="packet" r="5"><animateMotion dur="2.4s" begin="0.4s" repeatCount="indefinite" path="M486 222 H453"/></circle>
+          <path class="edge" d="M253 222 H220"/><path class="flow" d="M253 222 H220"/>
+          <circle class="packet" r="5"><animateMotion dur="2.4s" begin="0.8s" repeatCount="indefinite" path="M253 222 H220"/></circle>
+
+          <g class="node"><rect x="719" y="190" width="200" height="64" rx="10"/>
+            <text lang="pt" x="819" y="217" text-anchor="middle">render dos cartões</text>
+            <text lang="en" x="819" y="217" text-anchor="middle">render the cards</text>
+            <text class="label-sm" x="819" y="238" text-anchor="middle">city_card · stats_card</text></g>
+          <g class="node"><rect x="486" y="190" width="200" height="64" rx="10"/>
+            <text x="586" y="217" text-anchor="middle">assets/*.svg</text>
+            <text lang="pt" class="label-sm" x="586" y="238" text-anchor="middle">grava os arquivos</text>
+            <text lang="en" class="label-sm" x="586" y="238" text-anchor="middle">writes the files</text></g>
+          <g class="node"><rect x="253" y="190" width="200" height="64" rx="10"/>
+            <text x="353" y="217" text-anchor="middle">git commit + push</text>
+            <text lang="pt" class="label-sm" x="353" y="238" text-anchor="middle">só se mudou</text>
+            <text lang="en" class="label-sm" x="353" y="238" text-anchor="middle">only if changed</text></g>
+          <g class="node accent"><rect x="20" y="190" width="200" height="64" rx="10"/>
+            <text x="120" y="217" text-anchor="middle">README.md</text>
+            <text lang="pt" class="label-sm" x="120" y="238" text-anchor="middle">mostra city-panel.svg</text>
+            <text lang="en" class="label-sm" x="120" y="238" text-anchor="middle">shows city-panel.svg</text></g>
+
+          <!-- linha 3: contribuições (workflow separado) -->
+          <path class="edge" d="M220 362 H253"/><path class="flow blue" d="M220 362 H253"/>
+          <circle class="packet" r="5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M220 362 H253"/></circle>
+          <path class="edge" d="M453 362 H486"/><path class="flow blue" d="M453 362 H486"/>
+          <circle class="packet" r="5"><animateMotion dur="2.4s" begin="0.4s" repeatCount="indefinite" path="M453 362 H486"/></circle>
+
+          <g class="node"><rect x="20" y="330" width="200" height="64" rx="10"/>
+            <text x="120" y="357" text-anchor="middle">update_contributions</text>
+            <text class="label-sm" x="120" y="378" text-anchor="middle">cron · 06:17 UTC</text></g>
+          <g class="node"><rect x="253" y="330" width="200" height="64" rx="10"/>
+            <text x="353" y="357" text-anchor="middle">parse_calendar()</text>
+            <text lang="pt" class="label-sm" x="353" y="378" text-anchor="middle">lê o HTML do calendário</text>
+            <text lang="en" class="label-sm" x="353" y="378" text-anchor="middle">reads the calendar HTML</text></g>
+          <g class="node"><rect x="486" y="330" width="200" height="64" rx="10"/>
+            <text x="586" y="357" text-anchor="middle">contributions.svg</text>
+            <text class="label-sm" x="586" y="378" text-anchor="middle">+ data/contributions.json</text></g>
+          <text lang="pt" class="label-sm" x="719" y="358">Workflow separado, mesmo repositório</text>
+          <text lang="en" class="label-sm" x="719" y="358">Separate workflow, same repository</text>
+        </svg>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><div><h4><span lang="pt">Cron às 06:00 UTC</span><span lang="en">06:00 UTC cron</span></h4><p><span lang="pt">O GitHub Actions roda <span class="mono">scripts/build_cards.py</span> todo dia. Um push que altere esse script ou <span class="mono">festive.py</span> também dispara o workflow.</span><span lang="en">GitHub Actions runs <span class="mono">scripts/build_cards.py</span> every day. A push that changes that script or <span class="mono">festive.py</span> also triggers it.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Buscar dados no GitHub</span><span lang="en">Fetch data from GitHub</span></h4><p><span lang="pt">A função <span class="mono">fetch()</span> envia uma query GraphQL: repositórios, linguagens, pull requests e o calendário de contribuições do último ano.</span><span lang="en">The <span class="mono">fetch()</span> function sends one GraphQL query: repositories, languages, pull requests and the last year of contributions.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Escolher o evento do dia</span><span lang="en">Pick the event of the day</span></h4><p><span lang="pt">Datas festivas (Ano Novo, Carnaval, Páscoa, Festa Junina, Halloween, Natal) têm evento fixo. Nos outros dias, um dos 7 eventos, como neve ou chuva, é sorteado com a data como semente: o dia inteiro mostra a mesma cena.</span><span lang="en">Festive dates (New Year, Carnival, Easter, Festa Junina, Halloween, Christmas) have a fixed event. On other days, one of 7 events, such as snow or rain, is drawn with the date as seed: the whole day shows the same scene.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Renderizar os SVGs</span><span lang="en">Render the SVGs</span></h4><p><span lang="pt"><span class="mono">stats_card</span> e <span class="mono">city_card</span> montam o SVG a partir dos dados, e <span class="mono">frame()</span> desenha a moldura. Antes de gravar, <span class="mono">ElementTree</span> confirma que o XML está bem formado.</span><span lang="en"><span class="mono">stats_card</span> and <span class="mono">city_card</span> build the SVG from the data, and <span class="mono">frame()</span> draws the border. Before writing, <span class="mono">ElementTree</span> checks that the XML is well formed.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Commit só se mudou</span><span lang="en">Commit only if changed</span></h4><p><span lang="pt">O bot <span class="mono">github-actions[bot]</span> adiciona <span class="mono">assets/*.svg</span> e faz commit e push só quando <span class="mono">git diff --cached</span> encontra diferença.</span><span lang="en">The <span class="mono">github-actions[bot]</span> user stages <span class="mono">assets/*.svg</span> and commits and pushes only when <span class="mono">git diff --cached</span> finds a change.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">README mostra os cartões</span><span lang="en">The README shows the cards</span></h4><p><span lang="pt">O README usa os arquivos gerados, como <span class="mono">city-panel.svg</span> e <span class="mono">overview-panel.svg</span>. O calendário de contribuições vem de outro workflow, às 06:17 UTC.</span><span lang="en">The README uses the generated files, such as <span class="mono">city-panel.svg</span> and <span class="mono">overview-panel.svg</span>. The contributions calendar comes from another workflow, at 06:17 UTC.</span></p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Código que importa</span><span lang="en">Code that matters</span></h2>
+      <div class="code-block reveal">
+        <div class="bar">.github/workflows/cards.yml</div>
+        <pre><code class="language-yaml">name: Atualizar cartões do perfil
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/build_cards.py
+      - scripts/festive.py
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python scripts/build_cards.py
+        env:
+          GITHUB_TOKEN: $&#123;&#123; secrets.GITHUB_TOKEN }}
+      - name: Commit se mudou
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add assets/*.svg
+          git diff --cached --quiet || (git commit -m "chore: atualizar cartões do perfil" &amp;&amp; git push)</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">O workflow inteiro. O cron roda às 06:00 UTC; o <span class="mono">git diff --cached --quiet</span> evita commit vazio, então o histórico só cresce quando um cartão muda de fato.</span><span lang="en">The whole workflow. The cron runs at 06:00 UTC; <span class="mono">git diff --cached --quiet</span> prevents empty commits, so the history only grows when a card actually changes.</span></p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <div class="code-block reveal">
+        <div class="bar">scripts/festive.py</div>
+        <pre><code class="language-python">def festive_event(d):
+    """Evento festivo da data, ou None para cair no sorteio normal."""
+    md = (d.month, d.day)
+    if md == (12, 31) or md == (1, 1):
+        return "anonovo"
+    if (12, 20) &lt;= md &lt;= (12, 25):
+        return "natal"
+    if (10, 25) &lt;= md &lt;= (10, 31):
+        return "halloween"
+    if (6, 12) &lt;= md &lt;= (6, 29):
+        return "junina"
+    p = easter(d.year)
+    if p - timedelta(days=50) &lt;= d &lt;= p - timedelta(days=46):  # sábado de carnaval até quarta de cinzas
+        return "carnaval"
+    if p - timedelta(days=2) &lt;= d &lt;= p:  # sexta-feira santa até domingo
+        return "pascoa"
+    return None</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">Usado em <span class="mono">scripts/build_cards.py</span>, linhas 125-126: <span class="mono">festive_event(date.today())</span> tem prioridade; se devolver <span class="mono">None</span>, o sorteio com semente fica com o dia. <span class="mono">easter()</span> calcula a Páscoa com o algoritmo de Meeus/Jones/Butcher.</span><span lang="en">Used in <span class="mono">scripts/build_cards.py</span>, lines 125-126: <span class="mono">festive_event(date.today())</span> comes first; if it returns <span class="mono">None</span>, the seeded draw decides the day. <span class="mono">easter()</span> computes Easter with the Meeus/Jones/Butcher algorithm.</span></p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <div class="code-block reveal">
+        <div class="bar">scripts/build_cards.py</div>
+        <pre><code class="language-python">def stats_card(user):
+    repos = user["repositories"]
+    rows = [
+        ("Contribuições no último ano", user["contributionsCollection"]["contributionCalendar"]["totalContributions"]),
+        ("Commits no último ano", user["contributionsCollection"]["totalCommitContributions"]),
+        ("Repositórios públicos", repos["totalCount"]),
+        ("Pull requests", user["pullRequests"]["totalCount"]),
+        ("Estrelas recebidas", sum(r["stargazerCount"] for r in repos["nodes"])),
+    ]
+    body = [f'  &lt;text x="28" y="78" fill="{BLUE}" font-family="{FONT}" font-size="15"&gt;$ git stats --author rafael&lt;/text&gt;']
+    for i, (label, value) in enumerate(rows):
+        y = 112 + i * 28
+        body.append(f'  &lt;text x="28" y="{y}" fill="{SOFT}" font-family="{SANS}" font-size="15"&gt;{escape(label)}&lt;/text&gt;')
+        body.append(f'  &lt;text x="440" y="{y}" fill="{INK}" font-family="{FONT}" font-size="15" font-weight="700" text-anchor="end"&gt;{value}&lt;/text&gt;')
+    return frame(470, 112 + len(rows) * 28, "stats", "\n".join(body))</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">Os textos do cartão são escritos em português. A versão em inglês (<span class="mono">overview-en.svg</span>, <span class="mono">city-en.svg</span>) sai de <span class="mono">to_en()</span>, que troca frases por um dicionário, em <span class="mono">build_cards.py</span>, linhas 498-514.</span><span lang="en">The card text is written in Portuguese. The English version (<span class="mono">overview-en.svg</span>, <span class="mono">city-en.svg</span>) comes from <span class="mono">to_en()</span>, which swaps phrases through a dictionary, in <span class="mono">build_cards.py</span>, lines 498-514.</span></p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Prova</span><span lang="en">Proof</span></h2>
+      <div class="proof">
+        <div class="card reveal"><div class="big">860</div><p class="muted"><span lang="pt">contribuições no último ano</span><span lang="en">contributions in the last year</span></p></div>
+        <div class="card reveal"><div class="big">25</div><p class="muted"><span lang="pt">repositórios públicos</span><span lang="en">public repositories</span></p></div>
+        <div class="card reveal"><div class="big">7</div><p class="muted"><span lang="pt">estrelas recebidas nos repositórios</span><span lang="en">stars received across repositories</span></p></div>
+      </div>
+      <p class="code-note reveal"><span lang="pt">Números lidos do <span class="mono">assets/stats.svg</span> commitado. O cartão é reescrito todo dia, então podem estar desatualizados.</span><span lang="en">Numbers read from the committed <span class="mono">assets/stats.svg</span>. The card is rewritten every day, so they may be out of date.</span></p>
+      <div class="diagram-wrap reveal" style="margin-top:22px">
+        <img src="https://raw.githubusercontent.com/Famel-svg/Famel-svg/main/assets/stats.svg" alt="Cartão de estatísticas do GitHub / GitHub stats card" width="470" style="display:block;max-width:100%;height:auto">
+      </div>
+      <p class="code-note reveal"><span lang="pt">Cartão de estatísticas gerado por <span class="mono">stats_card()</span>.</span><span lang="en">Stats card generated by <span class="mono">stats_card()</span>.</span></p>
+      <div class="diagram-wrap reveal" style="margin-top:22px">
+        <img src="https://raw.githubusercontent.com/Famel-svg/Famel-svg/main/assets/city.svg" alt="Cidade pixel das contribuições com o evento do dia / Pixel city of contributions with the day's event" width="960" style="display:block;max-width:100%;height:auto">
+      </div>
+      <p class="code-note reveal"><span lang="pt">A cidade mostra cada dia do último ano como um lote. O evento no céu muda conforme a data.</span><span lang="en">The city shows each day of the last year as a lot. The event in the sky changes with the date.</span></p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container next-prev">
+      <a class="btn" href="combustiveis.html">← <span lang="pt">Painel de Combustíveis</span><span lang="en">Fuel Prices Dashboard</span></a>
+      <a class="btn" href="brave-cli.html">Brave CLI →</a>
+    </div>
+  </section>
+
+  <footer>© 2026 Rafael Andrade Tanimoto</footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="../js/main.js"></script>
+</body>
+</html>
