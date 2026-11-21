@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="pt-BR" data-lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RepForge · Rafael Tanimoto</title>
+  <meta name="description" content="RepForge: app Android de treino de força, offline e sem conta, com planilhas, plano semanal e progresso.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container">
+      <a class="brand" href="../index.html">~/rafael</a>
+      <div class="links">
+        <a href="../index.html#projects"><span lang="pt">projetos</span><span lang="en">projects</span></a>
+        <a href="../index.html#contact"><span lang="pt">contato</span><span lang="en">contact</span></a>
+      </div>
+      <button class="lang-toggle" aria-label="Trocar idioma / Switch language">EN</button>
+    </div>
+  </nav>
+
+  <header class="p-hero">
+    <div class="container">
+      <a class="back" href="../index.html#projects">← <span lang="pt">voltar aos projetos</span><span lang="en">back to projects</span></a>
+      <h1>RepForge</h1>
+      <div class="tagline"><span lang="pt">Diário de treino de força, offline e sem conta</span><span lang="en">Strength-training logbook, offline and no account</span></div>
+      <div class="chips" style="margin-top:16px"><span class="chip">Kotlin</span> <span class="chip">Jetpack Compose</span> <span class="chip">Room</span> <span class="chip">DataStore</span> <span class="chip">Glance</span> <span class="chip">Play Billing</span></div>
+      <div class="meta">
+        <a class="btn solid" href="https://github.com/Famel-svg/repforge" target="_blank" rel="noopener">GitHub →</a>
+      </div>
+    </div>
+  </header>
+
+  <section style="padding-top:0">
+    <div class="container reveal">
+      <div class="problem">
+        <strong><span lang="pt">o problema</span><span lang="en">the problem</span></strong>
+        <p><span lang="pt">Quem treina quer registrar uma série em um toque, sem login e sem depender de internet. O RepForge reúne planilhas de treino, plano semanal e acompanhamento de progresso, tudo guardado no próprio aparelho.</span><span lang="en">Someone training wants to log a set in one tap, without a login and without needing internet. RepForge brings together workout sheets, a weekly plan and progress tracking, all stored on the device itself.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Raio-X</span><span lang="en">X-ray</span></h2>
+      <p class="section-sub reveal"><span lang="pt">Do registro de uma série até o gráfico de progresso. Setas verdes gravam; setas azuis leem.</span><span lang="en">From a logged set to the progress chart. Green arrows write; blue arrows read.</span></p>
+      <div class="diagram-wrap reveal">
+        <svg class="diagram" viewBox="0 0 960 600" role="img" aria-label="Diagrama: série registrada até o gráfico de progresso / Diagram: logged set to progress chart">
+          <!-- lane captions -->
+          <text x="140" y="26" text-anchor="middle" class="label-sm" lang="pt">escrita: registrar série</text>
+          <text x="140" y="26" text-anchor="middle" class="label-sm" lang="en">write: log a set</text>
+          <text x="480" y="26" text-anchor="middle" class="label-sm" lang="pt">camada de dados</text>
+          <text x="480" y="26" text-anchor="middle" class="label-sm" lang="en">data layer</text>
+          <text x="820" y="26" text-anchor="middle" class="label-sm" lang="pt">leitura: progresso</text>
+          <text x="820" y="26" text-anchor="middle" class="label-sm" lang="en">read: progress</text>
+
+          <!-- write path (green) -->
+          <path class="edge" d="M140 100 V165"/>
+          <path class="flow" d="M140 100 V165"/>
+          <path class="edge" d="M250 195 H310 V320 H370"/>
+          <path class="flow" d="M250 195 H310 V320 H370"/>
+          <path class="edge" d="M440 350 V395"/>
+          <path class="flow" d="M440 350 V395"/>
+          <path class="edge" d="M440 455 V500"/>
+          <path class="flow" d="M440 455 V500"/>
+          <text x="430" y="378" text-anchor="end" class="label-sm">insertEntry()</text>
+          <text x="150" y="137" class="label-sm">addEntry()</text>
+
+          <!-- read path (blue) -->
+          <path class="edge" d="M520 500 V455"/>
+          <path class="flow blue" d="M520 500 V455"/>
+          <path class="edge" d="M520 395 V350"/>
+          <path class="flow blue" d="M520 395 V350"/>
+          <path class="edge" d="M590 320 H650 V195 H710"/>
+          <path class="flow blue" d="M590 320 H650 V195 H710"/>
+          <path class="edge" d="M820 165 V100"/>
+          <path class="flow blue" d="M820 165 V100"/>
+          <path class="edge" d="M820 225 V290"/>
+          <path class="edge" d="M820 350 V395"/>
+          <path class="flow blue" d="M820 350 V395"/>
+          <text x="530" y="378" class="label-sm">observeHistory()</text>
+          <text x="830" y="137" class="label-sm">StateFlow</text>
+          <text x="830" y="262" class="label-sm">buildState()</text>
+          <text x="830" y="378" class="label-sm">ProgressUiState</text>
+
+          <!-- nodes: left column -->
+          <g class="node">
+            <rect x="30" y="40" width="220" height="60" rx="10"/>
+            <text x="140" y="64" text-anchor="middle">WorkoutScreen.kt</text>
+            <text x="140" y="84" text-anchor="middle" class="label-sm" lang="pt">Compose · registrar série</text>
+            <text x="140" y="84" text-anchor="middle" class="label-sm" lang="en">Compose · log a set</text>
+          </g>
+          <g class="node">
+            <rect x="30" y="165" width="220" height="60" rx="10"/>
+            <text x="140" y="189" text-anchor="middle">WorkoutViewModel</text>
+            <text x="140" y="209" text-anchor="middle" class="label-sm" lang="pt">chama o repositório</text>
+            <text x="140" y="209" text-anchor="middle" class="label-sm" lang="en">calls the repository</text>
+          </g>
+
+          <!-- nodes: data column -->
+          <g class="node accent">
+            <rect x="370" y="290" width="220" height="60" rx="10"/>
+            <text x="480" y="314" text-anchor="middle">WorkoutRepositoryImpl</text>
+            <text x="480" y="334" text-anchor="middle" class="label-sm" lang="pt">valida e grava em transação</text>
+            <text x="480" y="334" text-anchor="middle" class="label-sm" lang="en">validates, writes atomically</text>
+          </g>
+          <g class="node">
+            <rect x="370" y="395" width="220" height="60" rx="10"/>
+            <text x="480" y="419" text-anchor="middle">WorkoutDao</text>
+            <text x="480" y="439" text-anchor="middle" class="label-sm" lang="pt">consulta e inserção Room</text>
+            <text x="480" y="439" text-anchor="middle" class="label-sm" lang="en">Room query and insert</text>
+          </g>
+          <g class="node">
+            <rect x="370" y="500" width="220" height="60" rx="10"/>
+            <text x="480" y="524" text-anchor="middle">SQLite · repforge.db</text>
+            <text x="480" y="544" text-anchor="middle" class="label-sm" lang="pt">entries: uma linha por série</text>
+            <text x="480" y="544" text-anchor="middle" class="label-sm" lang="en">entries: one row per set</text>
+          </g>
+
+          <!-- nodes: right column -->
+          <g class="node">
+            <rect x="710" y="40" width="220" height="60" rx="10"/>
+            <text x="820" y="64" text-anchor="middle">ProgressScreen.kt</text>
+            <text x="820" y="84" text-anchor="middle" class="label-sm" lang="pt">Compose · gráfico de progresso</text>
+            <text x="820" y="84" text-anchor="middle" class="label-sm" lang="en">Compose · progress chart</text>
+          </g>
+          <g class="node">
+            <rect x="710" y="165" width="220" height="60" rx="10"/>
+            <text x="820" y="189" text-anchor="middle">ProgressViewModel</text>
+            <text x="820" y="209" text-anchor="middle" class="label-sm">StateFlow · ProgressUiState</text>
+          </g>
+          <g class="node accent">
+            <rect x="710" y="290" width="220" height="60" rx="10"/>
+            <text x="820" y="314" text-anchor="middle">progressSeries()</text>
+            <text x="820" y="334" text-anchor="middle" class="label-sm" lang="pt">melhor valor por dia</text>
+            <text x="820" y="334" text-anchor="middle" class="label-sm" lang="en">best value per day</text>
+          </g>
+          <g class="node">
+            <rect x="710" y="395" width="220" height="60" rx="10"/>
+            <text x="820" y="419" text-anchor="middle">AreaLineChart</text>
+            <text x="820" y="439" text-anchor="middle" class="label-sm" lang="pt">curva de progresso</text>
+            <text x="820" y="439" text-anchor="middle" class="label-sm" lang="en">progress curve</text>
+          </g>
+
+          <!-- packets -->
+          <circle class="packet" r="5"><animateMotion dur="3s" repeatCount="indefinite" path="M250 195 H310 V320 H370"/></circle>
+          <circle class="packet" r="5"><animateMotion dur="3.5s" repeatCount="indefinite" path="M590 320 H650 V195 H710"/></circle>
+
+          <text x="480" y="590" text-anchor="middle" class="label-sm" lang="pt">Gravar: setas verdes. Ler: setas azuis.</text>
+          <text x="480" y="590" text-anchor="middle" class="label-sm" lang="en">Write: green arrows. Read: blue arrows.</text>
+        </svg>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><div><h4><span lang="pt">A tela registra a série</span><span lang="en">The screen logs the set</span></h4><p><span lang="pt">O botão de registrar em WorkoutScreen.kt chama WorkoutViewModel.addEntry(...) com reps, carga e tipo da série.</span><span lang="en">The log button in WorkoutScreen.kt calls WorkoutViewModel.addEntry(...) with reps, load and set type.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">O repositório valida e grava</span><span lang="en">The repository validates and writes</span></h4><p><span lang="pt">WorkoutRepositoryImpl valida reps, carga e duração, insere a linha em entries e atualiza a data da planilha, tudo numa mesma transação Room.</span><span lang="en">WorkoutRepositoryImpl validates reps, load and duration, inserts the row into entries and updates the sheet date, all in one Room transaction.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">O Room grava no SQLite</span><span lang="en">Room writes to SQLite</span></h4><p><span lang="pt">WorkoutDao.insertEntry grava uma linha na tabela entries do banco repforge.db, no próprio aparelho.</span><span lang="en">WorkoutDao.insertEntry writes one row to the entries table of the repforge.db database, on the device itself.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">O Flow emite de novo</span><span lang="en">The Flow emits again</span></h4><p><span lang="pt">observeHistory() é um Flow do Room: a nova série chega ao ProgressViewModel sem recarregar a tela.</span><span lang="en">observeHistory() is a Room Flow: the new set reaches ProgressViewModel without reloading the screen.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Cálculo e gráfico</span><span lang="en">Calculation and chart</span></h4><p><span lang="pt">progressSeries() guarda o melhor valor por dia (1RM estimado, tempo ou distância, conforme o tipo do exercício) e AreaLineChart desenha a curva. Séries de aquecimento ficam de fora.</span><span lang="en">progressSeries() keeps the best value per day (estimated 1RM, time or distance, by exercise type) and AreaLineChart draws the curve. Warm-up sets are left out.</span></p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Código que importa</span><span lang="en">Code that matters</span></h2>
+      <div class="code-block reveal">
+        <div class="bar">app/src/main/java/com/repforge/app/data/WorkoutRepositoryImpl.kt</div>
+        <pre><code class="language-kotlin">    override suspend fun addEntry(exerciseId: Long, sets: Int, reps: Int, weightKg: Double, setType: String, rpe: Double?, durationSec: Int?, distanceKm: Double?) {
+        validateSetInput(sets, reps, weightKg)?.let { throw AppException(it) }
+        validateEffort(durationSec, distanceKm)?.let { throw AppException(it) }
+        database.withTransaction {
+            dao.insertEntry(EntryEntity(exerciseId = exerciseId, sets = sets, reps = reps, weightKg = weightKg, setType = setType, rpe = rpe, durationSec = durationSec, distanceKm = distanceKm))
+            dao.touchSheetOfExercise(exerciseId, System.currentTimeMillis())
+        }
+        onChanged()
+    }</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">Gravar uma série: a validação roda antes da transação, então uma entrada inválida não grava nada. A linha da série e a data da planilha entram juntas.</span><span lang="en">Logging a set: validation runs before the transaction, so an invalid entry writes nothing. The set row and the sheet date are saved together.</span></p>
+
+      <div class="code-block reveal">
+        <div class="bar">app/src/main/java/com/repforge/app/domain/metrics/ProgressMetrics.kt</div>
+        <pre><code class="language-kotlin">fun progressSeries(entries: List&lt;HistoryEntry&gt;, zone: ZoneId): List&lt;ProgressPoint&gt; {
+    val work = entries.working()
+    val kind = work.firstOrNull()?.kind ?: KIND_REPS
+    val valued = when (kind) {
+        KIND_TIMED -&gt; work.mapNotNull { e -&gt; e.durationSec?.takeIf { it &gt; 0 }?.let { e to it.toDouble() } }
+        KIND_CARDIO -&gt; work.mapNotNull { e -&gt; e.distanceKm?.takeIf { it &gt; 0 }?.let { e to it } }
+        else -&gt; work.filter { it.reps &gt; 0 &amp;&amp; it.loaded }.map { it to estimatedOneRepMax(it.weightKg, it.reps) }
+    }
+    return valued.groupBy({ localDate(it.first.recordedAt, zone) }, { it.second })
+        .map { (date, day) -&gt; ProgressPoint(date, day.max()) }
+        .sortedBy { it.date }
+}</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">Como uma série vira ponto do gráfico: o valor depende do tipo do exercício, e o maior valor de cada dia é o ponto mostrado. Coberto por progressSeriesPicksBestPerDay em ProgressMetricsTest.</span><span lang="en">How a set becomes a chart point: the value depends on the exercise type, and the best value of each day is the point shown. Covered by progressSeriesPicksBestPerDay in ProgressMetricsTest.</span></p>
+
+      <div class="code-block reveal">
+        <div class="bar">app/src/main/java/com/repforge/app/domain/metrics/WorkoutMetrics.kt</div>
+        <pre><code class="language-kotlin">fun estimatedOneRepMax(weightKg: Double, reps: Int): Double {
+    require(weightKg &gt;= 0) { "Carga não pode ser negativa." }
+    require(reps &gt; 0) { "Repetições devem ser maiores que zero." }
+    return weightKg * (1.0 + reps / 30.0)
+}</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">A fórmula estima o 1RM a partir de carga e repetições. É uma estimativa, não um teste de força máxima.</span><span lang="en">The formula estimates a 1RM from load and reps. It is an estimate, not a maximal strength test.</span></p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Prova</span><span lang="en">Proof</span></h2>
+      <div class="proof">
+        <div class="card reveal"><div class="big">264</div><p class="muted"><span lang="pt">exercícios originais no catálogo offline (assets/exercises.json)</span><span lang="en">original exercises in the offline catalog (assets/exercises.json)</span></p></div>
+        <div class="card reveal"><div class="big">4</div><p class="muted"><span lang="pt">migrações Room, de 1→2 até 4→5, com schemas da versão 1 à 5 exportados</span><span lang="en">Room migrations, from 1→2 to 4→5, with schemas for versions 1 to 5 exported</span></p></div>
+        <div class="card reveal"><div class="big">150</div><p class="muted"><span lang="pt">testes unitários (@Test) em src/test, mais 4 de migração instrumentados</span><span lang="en">unit tests (@Test) in src/test, plus 4 instrumented migration tests</span></p></div>
+        <div class="card reveal"><div class="big">11</div><p class="muted"><span lang="pt">telas Compose (arquivos *Screen.kt) e 10 ViewModels</span><span lang="en">Compose screens (*Screen.kt files) and 10 ViewModels</span></p></div>
+        <div class="card reveal"><div class="big">0</div><p class="muted"><span lang="pt">contas ou logins exigidos; o README descreve o app como offline e sem conta</span><span lang="en">accounts or logins required; the README describes the app as offline with no account</span></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container next-prev">
+      <a class="btn" href="fluxo-android.html">← Fluxo</a>
+      <a class="btn" href="combustiveis.html"><span lang="pt">Painel de Combustíveis</span><span lang="en">Fuel Prices Dashboard</span> →</a>
+    </div>
+  </section>
+
+  <footer>© 2026 Rafael Andrade Tanimoto</footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="../js/main.js"></script>
+</body>
+</html>
