@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="pt-BR" data-lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Estoque Reserva · Rafael Tanimoto</title>
+  <meta name="description" content="API de reserva sem overbooking: controle otimista com @Version, 409 no conflito e teste com 50 threads disputando uma unidade.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container">
+      <a class="brand" href="../index.html">~/rafael</a>
+      <div class="links">
+        <a href="../index.html#projects"><span lang="pt">projetos</span><span lang="en">projects</span></a>
+        <a href="../index.html#contact"><span lang="pt">contato</span><span lang="en">contact</span></a>
+      </div>
+      <button class="lang-toggle" aria-label="Trocar idioma / Switch language">EN</button>
+    </div>
+  </nav>
+
+  <header class="p-hero">
+    <div class="container">
+      <a class="back" href="../index.html#projects">← <span lang="pt">voltar aos projetos</span><span lang="en">back to projects</span></a>
+      <h1>Estoque Reserva</h1>
+      <div class="tagline"><span lang="pt">Duas pessoas, uma unidade: só uma reserva passa.</span><span lang="en">Two people, one unit: only one reservation gets through.</span></div>
+      <div class="chips" style="margin-top:16px"><span class="chip">Java 21</span><span class="chip">Spring Boot 3</span><span class="chip">PostgreSQL</span><span class="chip">JPA @Version</span><span class="chip">Testcontainers</span></div>
+      <div class="meta">
+        <a class="btn solid" href="https://github.com/Famel-svg/estoque-reserva" target="_blank" rel="noopener">GitHub →</a>
+      </div>
+    </div>
+  </header>
+
+  <section style="padding-top:0">
+    <div class="container reveal">
+      <div class="problem">
+        <strong><span lang="pt">o problema</span><span lang="en">the problem</span></strong>
+        <p><span lang="pt">Dois clientes leem estoque = 1 ao mesmo tempo. Sem controle, os dois decrementam e as duas reservas são aceitas: overbooking. O banco precisa decidir quem perde.</span><span lang="en">Two customers read stock = 1 at the same time. Without a guard, both decrement and both reservations are accepted: overbooking. The database has to decide who loses.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Raio-X</span><span lang="en">X-ray</span></h2>
+      <p class="section-sub reveal"><span lang="pt">Threads disputam a mesma linha. A primeira atualização feita com a versão lida vence; as outras veem a versão mudar e recebem 409.</span><span lang="en">Threads compete for the same row. The first update made with the version it read wins; the others see the version change and get 409.</span></p>
+      <div class="diagram-wrap reveal">
+        <svg class="diagram" viewBox="0 0 960 420" role="img" aria-label="Diagrama: 50 threads disputam 1 unidade; a atualização com a version lida grava N+1 e as demais recebem 409 / Diagram: 50 threads compete for 1 unit; the update with the version read writes N+1 and the rest get 409">
+          <!-- 50 threads, shown as four clients -->
+          <text class="label-sm" x="30" y="40" lang="pt">50 threads disputam 1 unidade</text>
+          <text class="label-sm" x="30" y="40" lang="en">50 threads compete for 1 unit</text>
+
+          <g class="node">
+            <rect x="30" y="70" width="170" height="52" rx="10"/>
+            <text x="115" y="101" text-anchor="middle" lang="pt">Cliente 1</text>
+            <text x="115" y="101" text-anchor="middle" lang="en">Client 1</text>
+          </g>
+          <g class="node accent">
+            <rect x="30" y="150" width="170" height="52" rx="10"/>
+            <text x="115" y="181" text-anchor="middle" lang="pt">Cliente 2</text>
+            <text x="115" y="181" text-anchor="middle" lang="en">Client 2</text>
+          </g>
+          <g class="node">
+            <rect x="30" y="230" width="170" height="52" rx="10"/>
+            <text x="115" y="261" text-anchor="middle" lang="pt">Cliente 3</text>
+            <text x="115" y="261" text-anchor="middle" lang="en">Client 3</text>
+          </g>
+          <g class="node">
+            <rect x="30" y="310" width="170" height="52" rx="10"/>
+            <text x="115" y="341" text-anchor="middle" lang="pt">Cliente 50</text>
+            <text x="115" y="341" text-anchor="middle" lang="en">Client 50</text>
+          </g>
+
+          <!-- API -->
+          <g class="node">
+            <rect x="280" y="150" width="220" height="150" rx="12"/>
+            <text x="390" y="176" text-anchor="middle">API</text>
+            <text x="390" y="198" text-anchor="middle" class="label-sm">POST /reservas</text>
+            <text x="390" y="214" text-anchor="middle" lang="pt" class="label-sm">lê version = N</text>
+            <text x="390" y="214" text-anchor="middle" lang="en" class="label-sm">reads version = N</text>
+          </g>
+
+          <!-- PostgreSQL -->
+          <g class="node">
+            <rect x="700" y="150" width="230" height="150" rx="12"/>
+            <text x="815" y="178" text-anchor="middle">PostgreSQL · produto</text>
+            <text x="815" y="200" text-anchor="middle" lang="pt" class="label-sm">estoque 1 · version N</text>
+            <text x="815" y="200" text-anchor="middle" lang="en" class="label-sm">stock 1 · version N</text>
+          </g>
+
+          <!-- Result: success (accent) and conflict (danger) -->
+          <g class="node accent">
+            <rect x="700" y="30" width="230" height="64" rx="10"/>
+            <text x="815" y="56" text-anchor="middle">200 OK · version N+1</text>
+            <text x="815" y="78" text-anchor="middle" lang="pt" class="label-sm">reserva criada</text>
+            <text x="815" y="78" text-anchor="middle" lang="en" class="label-sm">reservation created</text>
+          </g>
+          <g class="node danger">
+            <rect x="700" y="330" width="230" height="70" rx="10"/>
+            <text x="815" y="352" text-anchor="middle">409 Conflict</text>
+            <text x="815" y="370" text-anchor="middle" lang="pt" class="label-sm">conflito de versão</text>
+            <text x="815" y="370" text-anchor="middle" lang="en" class="label-sm">version conflict</text>
+            <text x="815" y="388" text-anchor="middle" lang="pt" class="label-sm">ou estoque insuficiente</text>
+            <text x="815" y="388" text-anchor="middle" lang="en" class="label-sm">or insufficient stock</text>
+          </g>
+
+          <!-- Static routes -->
+          <path class="edge" d="M200 96 C240 96 240 225 280 225"/>
+          <path class="edge" d="M200 256 C240 256 240 225 280 225"/>
+          <path class="edge" d="M200 336 C240 336 240 225 280 225"/>
+
+          <!-- Winner: reads, then UPDATE ... WHERE version = N -->
+          <path class="flow" d="M200 176 C240 176 240 225 280 225 H700"/>
+          <text class="label-sm" x="600" y="212" text-anchor="middle">SELECT + UPDATE</text>
+          <text class="label-sm" x="600" y="250" text-anchor="middle">WHERE version = N</text>
+          <path class="flow" d="M915 150 V94"/>
+
+          <!-- Losers: 0 rows updated -> 409 -->
+          <path class="flow danger" d="M390 300 V365 H700"/>
+          <text class="label-sm" x="545" y="356" text-anchor="middle" lang="pt">0 linhas: version mudou</text>
+          <text class="label-sm" x="545" y="356" text-anchor="middle" lang="en">0 rows: version changed</text>
+
+          <!-- Winner packet: reaches the DB row and holds there -->
+          <circle class="packet" r="6">
+            <animateMotion dur="4s" repeatCount="indefinite" calcMode="linear" keyTimes="0;0.5;1" keyPoints="0;1;1" path="M200 176 C240 176 240 225 280 225 H815"/>
+          </circle>
+          <!-- Winner result: rises to 200 OK -->
+          <circle class="packet" r="5">
+            <animateMotion dur="4s" repeatCount="indefinite" calcMode="linear" keyTimes="0;0.5;0.75;1" keyPoints="0;0;1;1" path="M915 150 V94"/>
+            <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.5;0.55;0.95;1" dur="4s" repeatCount="indefinite"/>
+          </circle>
+
+          <!-- Losers: start green, turn red at the API, end at 409 -->
+          <circle r="5" fill="#39ff9f">
+            <animate attributeName="fill" values="#39ff9f;#ff5c7a;#ff5c7a" keyTimes="0;0.2;1" dur="4s" begin="0.2s" repeatCount="indefinite"/>
+            <animateMotion dur="4s" begin="0.2s" repeatCount="indefinite" calcMode="linear" keyTimes="0;0.6;1" keyPoints="0;1;1" path="M200 96 C240 96 240 225 280 225 H390 V365 H700"/>
+          </circle>
+          <circle r="5" fill="#39ff9f">
+            <animate attributeName="fill" values="#39ff9f;#ff5c7a;#ff5c7a" keyTimes="0;0.2;1" dur="4s" begin="0.4s" repeatCount="indefinite"/>
+            <animateMotion dur="4s" begin="0.4s" repeatCount="indefinite" calcMode="linear" keyTimes="0;0.6;1" keyPoints="0;1;1" path="M200 256 C240 256 240 225 280 225 H390 V365 H700"/>
+          </circle>
+          <circle r="5" fill="#39ff9f">
+            <animate attributeName="fill" values="#39ff9f;#ff5c7a;#ff5c7a" keyTimes="0;0.2;1" dur="4s" begin="0.6s" repeatCount="indefinite"/>
+            <animateMotion dur="4s" begin="0.6s" repeatCount="indefinite" calcMode="linear" keyTimes="0;0.6;1" keyPoints="0;1;1" path="M200 336 C240 336 240 225 280 225 H390 V365 H700"/>
+          </circle>
+        </svg>
+      </div>
+
+      <div class="steps">
+        <div class="step reveal"><div>
+          <h4><span lang="pt">Os clientes disparam juntos</span><span lang="en">Clients fire together</span></h4>
+          <p><span lang="pt">No teste, 50 threads chamam reservar() para o mesmo produto, com estoque 1. Um CountDownLatch libera todas ao mesmo tempo.</span><span lang="en">In the test, 50 threads call reservar() for the same product, with stock 1. A CountDownLatch releases them all at once.</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">Cada uma lê o produto com a versão N</span><span lang="en">Each one reads the product at version N</span></h4>
+          <p><span lang="pt">findById traz estoque = 1 e version = N. Nenhum lock é pego na leitura.</span><span lang="en">findById loads stock = 1 and version = N. No lock is taken on the read.</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">Checagem de estoque em memória</span><span lang="en">Stock check in memory</span></h4>
+          <p><span lang="pt">produto.reservar(1) passa para quem ainda vê estoque 1. Quem lê depois do vencedor vê 0 e recebe estoque insuficiente (409).</span><span lang="en">produto.reservar(1) passes for whoever still sees stock 1. Whoever reads after the winner sees 0 and gets insufficient stock (409).</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">UPDATE condicionado à versão</span><span lang="en">UPDATE conditioned on the version</span></h4>
+          <p><span lang="pt">saveAndFlush envia UPDATE ... WHERE id = ? AND version = N. O primeiro casa e grava version N+1. O segundo não casa com nenhuma linha.</span><span lang="en">saveAndFlush sends UPDATE ... WHERE id = ? AND version = N. The first matches and writes version N+1. The second matches no row.</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">O perdedor recebe 409</span><span lang="en">The loser gets 409</span></h4>
+          <p><span lang="pt">O Hibernate lança OptimisticLockException; o Spring traduz para OptimisticLockingFailureException; TratadorDeErros responde 409.</span><span lang="en">Hibernate throws OptimisticLockException; Spring translates it to OptimisticLockingFailureException; TratadorDeErros answers 409.</span></p>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Código que importa</span><span lang="en">Code that matters</span></h2>
+
+      <div class="code-block reveal">
+        <div class="bar">src/main/java/com/estoque/reserva/produto/Produto.java</div>
+        <pre><code class="language-java">@Entity
+@Table(name = "produto")
+public class Produto {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 120)
+    private String nome;
+
+    @Column(name = "estoque_disponivel", nullable = false)
+    private int estoqueDisponivel;
+
+    @Version
+    private long version;
+
+    // ...
+
+    public void reservar(int quantidade) {
+        if (quantidade &lt;= 0) {
+            throw new IllegalArgumentException("quantidade deve ser positiva");
+        }
+        if (quantidade &gt; estoqueDisponivel) {
+            throw new EstoqueInsuficienteException(
+                    "estoque insuficiente para " + nome + ": disponível " + estoqueDisponivel);
+        }
+        estoqueDisponivel -= quantidade;
+    }</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">Sem @Version, duas transações leriam estoque = 1 e gravariam estoque = 0 sem nenhum erro. Com ele, cada UPDATE carrega a versão lida, e a segunda escrita falha.</span><span lang="en">Without @Version, two transactions could read stock = 1 and both write stock = 0 with no error. With it, each UPDATE carries the version it read, and the second write fails.</span></p>
+
+      <div class="code-block reveal">
+        <div class="bar">src/main/java/com/estoque/reserva/api/TratadorDeErros.java</div>
+        <pre><code class="language-java">    @ExceptionHandler({EstoqueInsuficienteException.class, OperacaoInvalidaException.class})
+    public ProblemDetail regraDeNegocio(RuntimeException e) {
+        return problema(HttpStatus.CONFLICT, e.getMessage());
+    }
+
+    /** Conflito de @Version: outra transação alterou o produto primeiro. */
+    @ExceptionHandler({OptimisticLockingFailureException.class, OptimisticLockException.class})
+    public ProblemDetail conflitoDeVersao() {
+        return problema(HttpStatus.CONFLICT, "estoque alterado por outra requisição; tente novamente");
+    }</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">Estoque insuficiente e conflito de versão caem no 409. A mensagem do conflito pede nova tentativa ao cliente.</span><span lang="en">Insufficient stock and version conflicts both return 409. The conflict message asks the client to try again.</span></p>
+
+      <div class="code-block reveal">
+        <div class="bar">src/test/java/com/estoque/reserva/reserva/ReservaConcorrenciaTest.java</div>
+        <pre><code class="language-java">    @Test
+    void exatamenteUmaReservaVenceQuandoCinquentaThreadsDisputamUmaUnidade() throws Exception {
+        Produto produto = produtos.save(new Produto("Último item", 1));
+        Long produtoId = produto.getId();
+        // ...
+        ExecutorService executor = Executors.newFixedThreadPool(THREADS);
+        CountDownLatch largada = new CountDownLatch(1);
+        // ...
+        largada.countDown();
+        for (Future&lt;?&gt; tarefa : tarefas) {
+            tarefa.get(30, TimeUnit.SECONDS);
+        }
+        executor.shutdown();
+        assertThat(executor.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
+        // ...
+        assertThat(sucessos.get()).isEqualTo(1);
+        assertThat(sucessos.get() + semEstoque.get() + conflitoDeVersao.get()).isEqualTo(THREADS);
+        // ...
+    }</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">A asserção central é sucesso == 1. Somar as três categorias garante que nenhuma thread some da contagem.</span><span lang="en">The core assertion is success == 1. Summing the three categories ensures no thread disappears from the count.</span></p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Prova</span><span lang="en">Proof</span></h2>
+      <div class="proof">
+        <div class="card reveal"><div class="big">50 → 1</div><p class="muted"><span lang="pt">threads disputando 1 unidade: o teste exige exatamente 1 sucesso</span><span lang="en">threads competing for 1 unit: the test requires exactly 1 success</span></p></div>
+        <div class="card reveal"><div class="big">0 · 1</div><p class="muted"><span lang="pt">estoque final 0 e exatamente 1 linha de reserva para o produto</span><span lang="en">final stock 0 and exactly 1 reservation row for the product</span></p></div>
+        <div class="card reveal"><div class="big">= 50</div><p class="muted"><span lang="pt">sucesso + sem estoque + conflito de versão precisa somar 50 threads</span><span lang="en">success + out of stock + version conflict must add up to 50 threads</span></p></div>
+        <div class="card reveal"><div class="big">409</div><p class="muted"><span lang="pt">estoque insuficiente responde 409 (ReservaControllerTest)</span><span lang="en">insufficient stock returns 409 (ReservaControllerTest)</span></p></div>
+      </div>
+      <p class="code-note reveal"><span lang="pt">Os valores são as asserções de ReservaConcorrenciaTest, não uma medição feita para esta página. A execução exige Docker (Testcontainers).</span><span lang="en">The values are the assertions in ReservaConcorrenciaTest, not a measurement made for this page. Running it requires Docker (Testcontainers).</span></p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container next-prev">
+      <a class="btn" href="auditoria-pix.html">← Auditoria PIX</a>
+      <a class="btn" href="wtc-chat.html">WTC CRM Chat →</a>
+    </div>
+  </section>
+
+  <footer>© 2026 Rafael Andrade Tanimoto</footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="../js/main.js"></script>
+</body>
+</html>
