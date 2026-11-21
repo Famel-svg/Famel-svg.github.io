@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="pt-BR" data-lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fluxo · Rafael Tanimoto</title>
+  <meta name="description" content="Controle financeiro pessoal offline para Android: notificações de bancos viram lançamentos que você revisa.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container">
+      <a class="brand" href="../index.html">~/rafael</a>
+      <div class="links">
+        <a href="../index.html#projects"><span lang="pt">projetos</span><span lang="en">projects</span></a>
+        <a href="../index.html#contact"><span lang="pt">contato</span><span lang="en">contact</span></a>
+      </div>
+      <button class="lang-toggle" aria-label="Trocar idioma / Switch language">EN</button>
+    </div>
+  </nav>
+
+  <header class="p-hero">
+    <div class="container">
+      <a class="back" href="../index.html#projects">← <span lang="pt">voltar aos projetos</span><span lang="en">back to projects</span></a>
+      <h1>Fluxo</h1>
+      <div class="tagline"><span lang="pt">Notificações de bancos viram lançamentos; o que é ambíguo espera sua revisão.</span><span lang="en">Bank notifications become transactions; anything ambiguous waits for your review.</span></div>
+      <div class="chips" style="margin-top:16px"><span class="chip">Kotlin</span> <span class="chip">Jetpack Compose</span> <span class="chip">SQLite</span> <span class="chip">NotificationListenerService</span></div>
+      <div class="meta">
+        <a class="btn solid" href="https://github.com/Famel-svg/fluxo-android" target="_blank" rel="noopener">GitHub →</a>
+      </div>
+    </div>
+  </header>
+
+  <section style="padding-top:0">
+    <div class="container reveal">
+      <div class="problem">
+        <strong><span lang="pt">o problema</span><span lang="en">the problem</span></strong>
+        <p><span lang="pt">Notificações de bancos chegam uma a uma, sem histórico nem total. O Fluxo as transforma em lançamentos no próprio aparelho, sem servidor nem conta, e deixa na sua mão o que o texto não prova.</span><span lang="en">Bank notifications arrive one by one, with no history and no totals. Fluxo turns them into transactions on the device itself, with no server and no account, and leaves to you whatever the text does not prove.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Raio-X</span><span lang="en">X-ray</span></h2>
+      <p class="section-sub reveal"><span lang="pt">Caminho de uma notificação. Verde: confirmado ou ação sua; âmbar: espera revisão; azul: armazenamento e backup.</span><span lang="en">Path of one notification. Green: confirmed or your action; amber: waits for review; blue: storage and backup.</span></p>
+      <div class="diagram-wrap reveal">
+        <svg class="diagram" viewBox="0 0 960 520" role="img" aria-label="Fluxo: notificação do banco até backup criptografado. / Fluxo: bank notification to encrypted backup.">
+          <path class="edge" d="M200 76 H240"/><path class="flow " d="M200 76 H240"/><circle class="packet" r="5"><animateMotion dur="2.2s" begin="0s" repeatCount="indefinite" path="M200 76 H240"/></circle>
+          <path class="edge" d="M440 76 H500"/><path class="flow " d="M440 76 H500"/><circle class="packet" r="5"><animateMotion dur="2.2s" begin="0.4s" repeatCount="indefinite" path="M440 76 H500"/></circle>
+          <path class="edge" d="M700 76 H740"/><path class="flow " d="M700 76 H740"/><circle class="packet" r="5"><animateMotion dur="2.2s" begin="0.8s" repeatCount="indefinite" path="M700 76 H740"/></circle>
+          <path class="edge" d="M600 112 V200"/><path class="flow warn" d="M600 112 V200"/><circle class="packet" r="5"><animateMotion dur="2.4s" begin="0.2s" repeatCount="indefinite" path="M600 112 V200"/></circle>
+          <path class="edge" d="M840 112 V200"/><path class="flow " d="M840 112 V200"/><circle class="packet" r="5"><animateMotion dur="2.4s" begin="0.6s" repeatCount="indefinite" path="M840 112 V200"/></circle>
+          <path class="edge" d="M600 264 V340"/><path class="flow blue" d="M600 264 V340"/><circle class="packet" r="5"><animateMotion dur="2.4s" begin="0.3s" repeatCount="indefinite" path="M600 264 V340"/></circle>
+          <path class="edge" d="M700 372 H840 V264"/><path class="flow " d="M700 372 H840 V264"/><circle class="packet" r="5"><animateMotion dur="2.8s" begin="0.9s" repeatCount="indefinite" path="M700 372 H840 V264"/></circle>
+          <path class="edge" d="M900 264 V430"/><path class="flow blue" d="M900 264 V430"/><circle class="packet" r="5"><animateMotion dur="2.8s" begin="0.5s" repeatCount="indefinite" path="M900 264 V430"/></circle>
+          <g class="node">
+          <rect x="20" y="40" width="180" height="72" rx="10"/>
+          <text lang="pt" x="110.0" y="64" text-anchor="middle">App do banco</text><text lang="en" x="110.0" y="64" text-anchor="middle">Bank app</text>
+          <text lang="pt" class="label-sm" x="110.0" y="84" text-anchor="middle">notificação de transação</text><text lang="en" class="label-sm" x="110.0" y="84" text-anchor="middle">transaction notification</text>
+          </g>
+          <g class="node">
+          <rect x="240" y="40" width="200" height="72" rx="10"/>
+          <text lang="pt" x="340.0" y="64" text-anchor="middle">NotificationListener</text><text lang="en" x="340.0" y="64" text-anchor="middle">NotificationListener</text>
+          <text lang="pt" class="label-sm" x="340.0" y="84" text-anchor="middle">lê com a captura ligada</text><text lang="en" class="label-sm" x="340.0" y="84" text-anchor="middle">reads while capture is on</text>
+          </g>
+          <g class="node">
+          <rect x="500" y="40" width="200" height="72" rx="10"/>
+          <text lang="pt" x="600.0" y="64" text-anchor="middle">NotificationParser</text><text lang="en" x="600.0" y="64" text-anchor="middle">NotificationParser</text>
+          <text lang="pt" class="label-sm" x="600.0" y="84" text-anchor="middle">valor · direção · meio</text><text lang="en" class="label-sm" x="600.0" y="84" text-anchor="middle">amount · direction · method</text>
+          <text lang="pt" class="label-sm" x="600.0" y="102" text-anchor="middle">+ estabelecimento</text><text lang="en" class="label-sm" x="600.0" y="102" text-anchor="middle">+ merchant</text>
+          </g>
+          <g class="node accent">
+          <rect x="740" y="40" width="200" height="72" rx="10"/>
+          <text lang="pt" x="840.0" y="64" text-anchor="middle">Sem motivo de revisão</text><text lang="en" x="840.0" y="64" text-anchor="middle">No review reason</text>
+          <text lang="pt" class="label-sm" x="840.0" y="84" text-anchor="middle">entra como confirmado</text><text lang="en" class="label-sm" x="840.0" y="84" text-anchor="middle">stored as confirmed</text>
+          </g>
+          <g class="node warn">
+          <rect x="500" y="200" width="200" height="64" rx="10"/>
+          <text lang="pt" x="600.0" y="224" text-anchor="middle">Fila Revisar</text><text lang="en" x="600.0" y="224" text-anchor="middle">Review queue</text>
+          <text lang="pt" class="label-sm" x="600.0" y="244" text-anchor="middle">fora dos totais</text><text lang="en" class="label-sm" x="600.0" y="244" text-anchor="middle">outside the totals</text>
+          </g>
+          <g class="node">
+          <rect x="740" y="200" width="200" height="64" rx="10"/>
+          <text lang="pt" x="840.0" y="224" text-anchor="middle">SQLite fluxo.db</text><text lang="en" x="840.0" y="224" text-anchor="middle">SQLite fluxo.db</text>
+          <text lang="pt" class="label-sm" x="840.0" y="244" text-anchor="middle">armazenamento privado</text><text lang="en" class="label-sm" x="840.0" y="244" text-anchor="middle">private storage</text>
+          </g>
+          <g class="node accent">
+          <rect x="500" y="340" width="200" height="64" rx="10"/>
+          <text lang="pt" x="600.0" y="364" text-anchor="middle">Registros: confirmar</text><text lang="en" x="600.0" y="364" text-anchor="middle">Records: you confirm</text>
+          <text lang="pt" class="label-sm" x="600.0" y="384" text-anchor="middle">deslizar ou em lote</text><text lang="en" class="label-sm" x="600.0" y="384" text-anchor="middle">swipe or batch</text>
+          </g>
+          <g class="node">
+          <rect x="740" y="430" width="200" height="64" rx="10"/>
+          <text lang="pt" x="840.0" y="454" text-anchor="middle">Backup criptografado</text><text lang="en" x="840.0" y="454" text-anchor="middle">Encrypted backup</text>
+          <text lang="pt" class="label-sm" x="840.0" y="474" text-anchor="middle">JSON + AES-256-GCM</text><text lang="en" class="label-sm" x="840.0" y="474" text-anchor="middle">JSON + AES-256-GCM</text>
+          </g>
+          <text lang="pt" class="label-sm" x="612" y="160" text-anchor="start">com motivo</text><text lang="en" class="label-sm" x="612" y="160" text-anchor="start">with reason</text>
+          <text lang="pt" class="label-sm" x="612" y="306" text-anchor="start">você confirma</text><text lang="en" class="label-sm" x="612" y="306" text-anchor="start">you confirm</text>
+          <text lang="pt" class="label-sm" x="712" y="392" text-anchor="start">confirmado</text><text lang="en" class="label-sm" x="712" y="392" text-anchor="start">confirmed</text>
+          <text lang="pt" class="label-sm" x="908" y="350" text-anchor="start">exporta</text><text lang="en" class="label-sm" x="908" y="350" text-anchor="start">export</text>
+          <text lang="pt" class="label-sm" x="20" y="330" text-anchor="start">Nada sai do aparelho:</text><text lang="en" class="label-sm" x="20" y="330" text-anchor="start">Nothing leaves the device:</text>
+          <text lang="pt" class="label-sm" x="20" y="348" text-anchor="start">o app não declara permissão de internet.</text><text lang="en" class="label-sm" x="20" y="348" text-anchor="start">the app declares no internet permission.</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <div class="steps">
+        <div class="step reveal"><div><h4><span lang="pt">Captura</span><span lang="en">Capture</span></h4><p><span lang="pt">BankNotificationListener recebe a notificação só com a captura ligada. Na build da loja, passam apenas os 12 apps de KnownFinancialApps e a Carteira do Google.</span><span lang="en">BankNotificationListener receives a notification only while capture is on. In the store build, only the 12 apps in KnownFinancialApps and Google Wallet pass.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Leitura</span><span lang="en">Parsing</span></h4><p><span lang="pt">NotificationParser extrai o valor (um único R$), a direção (entrada ou saída) e o meio (Pix, crédito, débito ou VR). Texto que não é movimentação é descartado.</span><span lang="en">NotificationParser extracts the amount (a single R$ value), the direction (income or expense) and the method (Pix, credit, debit or VR). Text that is not a transaction is discarded.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Status</span><span lang="en">Status</span></h4><p><span lang="pt">Sem motivo de revisão, o lançamento entra como confirmado. Valor ausente, direção desconhecida ou qualquer alerta (pendente, recusado, fatura, oferta, mais de um valor) o coloca em Revisar.</span><span lang="en">With no review reason, the transaction is stored as confirmed. A missing amount, an unknown direction or any warning (pending, declined, invoice, offer, several amounts) puts it under Review.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Confirmação</span><span lang="en">Confirmation</span></h4><p><span lang="pt">Em Registros você confirma um por um (deslizar ou Confirmar) ou em lote. Itens em revisão não entram nos totais até isso.</span><span lang="en">In Records you confirm one by one (swipe or Confirm) or in batch. Items under review stay out of the totals until then.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Gravação</span><span lang="en">Storage</span></h4><p><span lang="pt">LedgerRepository grava em fluxo.db (SQLite, offline). Cada notificação tem uma chave de origem; a mesma chave atualiza o lançamento existente em vez de criar outro.</span><span lang="en">LedgerRepository writes to fluxo.db (SQLite, offline). Each notification has a source key; the same key updates the existing transaction instead of creating another.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Backup</span><span lang="en">Backup</span></h4><p><span lang="pt">LedgerBackup exporta o banco em JSON. BackupCipher cifra com AES-256-GCM e PBKDF2-HMAC-SHA256 (600.000 iterações), com senha de 12 caracteres ou mais. Permissões e bancos selecionados não são restaurados.</span><span lang="en">LedgerBackup exports the database as JSON. BackupCipher encrypts it with AES-256-GCM and PBKDF2-HMAC-SHA256 (600,000 iterations), with a password of 12 or more characters. Permissions and selected banks are not restored.</span></p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Código que importa</span><span lang="en">Code that matters</span></h2>
+
+      <div class="code-block reveal">
+        <div class="bar">app/src/main/java/br/com/fluxo/app/BankNotificationListener.kt</div>
+        <pre><code class="language-kotlin">override fun onNotificationPosted(sbn: StatusBarNotification) {
+    // Fluxo's own "capture active" notification is not an outside event; it must not count as blocked.
+    if (sbn.packageName == packageName) return
+    val repository = (application as FluxoApplication).repository
+    if (!repository.allowsNotification(sbn.packageName)) { CaptureHealth.blocked(); return }
+    CaptureHealth.observed(sbn.packageName, System.currentTimeMillis())
+    if (!events.trySend(Event.Posted(sbn)).isSuccess) repository.reportCaptureError()
+}</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">Entrada do listener. A política de captura decide antes de qualquer leitura de texto; o que passa vai para uma fila em ordem, e a remoção de uma notificação entra na mesma fila.</span><span lang="en">Listener entry point. The capture policy decides before any text is read; what passes goes into an ordered queue, and a removal goes through the same queue.</span></p>
+
+      <div class="code-block reveal" style="margin-top:32px">
+        <div class="bar">core/src/main/kotlin/br/com/fluxo/core/NotificationParser.kt</div>
+        <pre><code class="language-kotlin">fun parse(text: String): ParsedNotification? {
+    // Notification text is untrusted. Large messages need no expensive pattern work.
+    if (text.isBlank() || text.length &gt; 16_384) return null
+    // ...
+    val amount = amounts.singleOrNull()?.let(::toCents)
+    // ...
+    val direction = when {
+        income &amp;&amp; !expense -&gt; Direction.INCOME
+        expense &amp;&amp; !income -&gt; Direction.EXPENSE
+        else -&gt; Direction.UNKNOWN
+    }
+    // ...
+    return ParsedNotification(amount, direction, method,
+        if (reason.isEmpty()) ReviewStatus.CONFIRMED else ReviewStatus.REVIEW, reason,
+    // ...
+}</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">Texto de notificação é tratado como dado não confiável: limite de 16 KB, valor só com R$ e token inteiro, direção exigindo evidência. Qualquer motivo de revisão deixa o status em REVIEW.</span><span lang="en">Notification text is treated as untrusted data: a 16 KB limit, an amount only with R$ as a whole token, and a direction that needs evidence. Any review reason keeps the status at REVIEW.</span></p>
+
+      <div class="code-block reveal" style="margin-top:32px">
+        <div class="bar">core/src/main/kotlin/br/com/fluxo/core/BackupCipher.kt</div>
+        <pre><code class="language-kotlin">fun encrypt(plaintext: ByteArray, password: CharArray): ByteArray {
+    require(plaintext.size &lt;= MAX_PLAINTEXT_BYTES) { "Backup exceeds the supported size." }
+    require(password.size &gt;= 12) { "Backup password must contain at least 12 characters." }
+    val salt = ByteArray(SALT_BYTES).also(random::nextBytes)
+    val nonce = ByteArray(NONCE_BYTES).also(random::nextBytes)
+    val header = magic + byteArrayOf(VERSION.toByte()) + salt + nonce
+    return withKey(password, salt) { key -&gt;
+    // ...
+    val spec = PBEKeySpec(password, salt, 600_000, 256)
+}</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">Cifra antes de gravar no arquivo escolhido. O cabeçalho entra como dado autenticado (AAD); se a senha ou o conteúdo estiver errado, a falha de autenticação impede a restauração.</span><span lang="en">Encrypts before writing to the chosen file. The header is authenticated data (AAD); a wrong password or altered content fails authentication and blocks the restore.</span></p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Prova</span><span lang="en">Proof</span></h2>
+      <div class="proof">
+        <div class="card reveal"><div class="big">12</div><p class="muted"><span lang="pt">apps bancários na lista da build da loja, além da Carteira do Google</span><span lang="en">bank apps in the store build's allow-list, plus Google Wallet</span></p></div>
+        <div class="card reveal"><div class="big">154</div><p class="muted"><span lang="pt">testes JVM em core/src/test (parser, cifra, triagem e outras regras)</span><span lang="en">JVM tests in core/src/test (parser, cipher, triage and other rules)</span></p></div>
+        <div class="card reveal"><div class="big">150</div><p class="muted"><span lang="pt">testes instrumentados em app/src/androidTest (interface, banco, captura)</span><span lang="en">instrumented tests in app/src/androidTest (UI, database, capture)</span></p></div>
+        <div class="card reveal"><div class="big">0</div><p class="muted"><span lang="pt">permissões de internet declaradas no AndroidManifest; sem servidor, conta ou sincronização</span><span lang="en">internet permissions declared in AndroidManifest; no server, account or sync</span></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container next-prev">
+      <a class="btn" href="wtc-chat.html">← WTC CRM Chat</a>
+      <a class="btn" href="repforge.html">RepForge →</a>
+    </div>
+  </section>
+
+  <footer>© 2026 Rafael Andrade Tanimoto</footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="../js/main.js"></script>
+</body>
+</html>
