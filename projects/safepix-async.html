@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="pt-BR" data-lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SafePix Async · Rafael Tanimoto</title>
+  <meta name="description" content="Raio-X do SafePix Async: API Pix assíncrona com RabbitMQ, idempotência no PostgreSQL, retry e DLQ.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container">
+      <a class="brand" href="../index.html">~/rafael</a>
+      <div class="links">
+        <a href="../index.html#projects"><span lang="pt">projetos</span><span lang="en">projects</span></a>
+        <a href="../index.html#contact"><span lang="pt">contato</span><span lang="en">contact</span></a>
+      </div>
+      <button class="lang-toggle" aria-label="Trocar idioma / Switch language">EN</button>
+    </div>
+  </nav>
+
+  <header class="p-hero">
+    <div class="container">
+      <a class="back" href="../index.html#projects">← <span lang="pt">voltar aos projetos</span><span lang="en">back to projects</span></a>
+      <h1>SafePix Async</h1>
+      <div class="tagline"><span lang="pt">API de Pix com processamento assíncrono e idempotência</span><span lang="en">Async Pix API with idempotent processing</span></div>
+      <div class="chips" style="margin-top:16px"><span class="chip">Java 21</span> <span class="chip">Spring Boot 4</span> <span class="chip">RabbitMQ</span> <span class="chip">PostgreSQL</span> <span class="chip">Resilience4j</span> <span class="chip">Prometheus</span> <span class="chip">Grafana</span> <span class="chip">Testcontainers</span></div>
+      <div class="meta">
+        <a class="btn solid" href="https://github.com/Famel-svg/SafePix_Async" target="_blank" rel="noopener">GitHub →</a>
+      </div>
+    </div>
+  </header>
+
+  <section style="padding-top:0">
+    <div class="container reveal">
+      <div class="problem">
+        <strong><span lang="pt">o problema</span><span lang="en">the problem</span></strong>
+        <p><span lang="pt">Se a API espera o processamento, uma lentidão ou um reenvio do cliente pode gerar dois Pix. Aqui a API responde logo, o processamento acontece em segundo plano, e o id do Pix é a chave que impede o processamento duplicado.</span><span lang="en">If the API waits for processing, a slow call or a client retry can create two Pix. Here the API answers right away, processing runs in the background, and the Pix id is the key that blocks duplicate processing.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Raio-X</span><span lang="en">X-ray</span></h2>
+      <p class="section-sub reveal"><span lang="pt">Fluxo do código: a API só valida, publica e responde 202. A deduplicação e a gravação de estado ficam no consumer, com o PostgreSQL.</span><span lang="en">Code flow: the API only validates, publishes and answers 202. Deduplication and state live in the consumer, backed by PostgreSQL.</span></p>
+      <div class="diagram-wrap reveal">
+        <svg class="diagram" viewBox="0 0 960 530" role="img" aria-label="Diagrama do fluxo do SafePix Async / SafePix Async flow diagram">
+          <!-- top row: client -> API -> queue -> consumer -->
+          <g class="node">
+            <rect x="20" y="40" width="160" height="64" rx="10"/>
+            <text lang="pt" x="100" y="67" text-anchor="middle">Cliente HTTP</text>
+            <text lang="en" x="100" y="67" text-anchor="middle">HTTP client</text>
+            <text class="label-sm" x="100" y="86" text-anchor="middle">POST /api/v1/pix</text>
+          </g>
+          <g class="node accent">
+            <rect x="240" y="40" width="200" height="64" rx="10"/>
+            <text x="340" y="67" text-anchor="middle">API PixController</text>
+            <text class="label-sm" lang="pt" x="340" y="86" text-anchor="middle">202 Accepted, sem esperar</text>
+            <text class="label-sm" lang="en" x="340" y="86" text-anchor="middle">202 Accepted, no wait</text>
+          </g>
+          <g class="node">
+            <rect x="490" y="40" width="200" height="64" rx="10"/>
+            <text lang="pt" x="590" y="67" text-anchor="middle">Fila pix.recebido.v1</text>
+            <text lang="en" x="590" y="67" text-anchor="middle">Queue pix.recebido.v1</text>
+            <text class="label-sm" lang="pt" x="590" y="86" text-anchor="middle">TTL 1 h · exchange padrão</text>
+            <text class="label-sm" lang="en" x="590" y="86" text-anchor="middle">TTL 1 h · default exchange</text>
+          </g>
+          <g class="node accent">
+            <rect x="760" y="40" width="180" height="64" rx="10"/>
+            <text x="850" y="67" text-anchor="middle">PixConsumer</text>
+            <text class="label-sm" lang="pt" x="850" y="86" text-anchor="middle">concorrência 1</text>
+            <text class="label-sm" lang="en" x="850" y="86" text-anchor="middle">concurrency 1</text>
+          </g>
+
+          <!-- middle row: metrics, duplicate, PostgreSQL -->
+          <g class="node">
+            <rect x="240" y="170" width="200" height="64" rx="10"/>
+            <text x="340" y="197" text-anchor="middle">Prometheus</text>
+            <text class="label-sm" x="340" y="216" text-anchor="middle">/actuator/prometheus</text>
+          </g>
+          <g class="node warn">
+            <rect x="490" y="170" width="200" height="64" rx="10"/>
+            <text lang="pt" x="590" y="197" text-anchor="middle">Duplicado: ignorado</text>
+            <text lang="en" x="590" y="197" text-anchor="middle">Duplicate: skipped</text>
+            <text class="label-sm" lang="pt" x="590" y="216" text-anchor="middle">não processa de novo</text>
+            <text class="label-sm" lang="en" x="590" y="216" text-anchor="middle">not processed again</text>
+          </g>
+          <g class="node">
+            <rect x="760" y="170" width="180" height="64" rx="10"/>
+            <text x="850" y="197" text-anchor="middle">PostgreSQL</text>
+            <text class="label-sm" x="850" y="216" text-anchor="middle">pix_processing</text>
+          </g>
+
+          <!-- lower row: grafana, processed, validation -->
+          <g class="node">
+            <rect x="240" y="300" width="200" height="64" rx="10"/>
+            <text x="340" y="327" text-anchor="middle">Grafana</text>
+            <text class="label-sm" lang="pt" x="340" y="346" text-anchor="middle">painéis pix.*</text>
+            <text class="label-sm" lang="en" x="340" y="346" text-anchor="middle">pix.* dashboards</text>
+          </g>
+          <g class="node accent">
+            <rect x="490" y="300" width="200" height="64" rx="10"/>
+            <text lang="pt" x="590" y="327" text-anchor="middle">Processado</text>
+            <text lang="en" x="590" y="327" text-anchor="middle">Processed</text>
+            <text class="label-sm" x="590" y="346" text-anchor="middle">markProcessed → PROCESSED</text>
+          </g>
+          <g class="node">
+            <rect x="760" y="300" width="180" height="64" rx="10"/>
+            <text lang="pt" x="850" y="327" text-anchor="middle">Validação</text>
+            <text lang="en" x="850" y="327" text-anchor="middle">Validation</text>
+            <text class="label-sm" lang="pt" x="850" y="346" text-anchor="middle">valor &gt; 0 · antifraude</text>
+            <text class="label-sm" lang="en" x="850" y="346" text-anchor="middle">amount &gt; 0 · fraud check</text>
+          </g>
+
+          <!-- bottom row: DLQ and retry -->
+          <g class="node danger">
+            <rect x="490" y="430" width="200" height="64" rx="10"/>
+            <text x="590" y="457" text-anchor="middle">Dead-letter (DLQ)</text>
+            <text class="label-sm" x="590" y="476" text-anchor="middle">pix.recebido.v1.dlq</text>
+          </g>
+          <g class="node warn">
+            <rect x="760" y="430" width="180" height="64" rx="10"/>
+            <text x="850" y="457" text-anchor="middle">Retry</text>
+            <text class="label-sm" lang="pt" x="850" y="476" text-anchor="middle">3 tentativas, backoff</text>
+            <text class="label-sm" lang="en" x="850" y="476" text-anchor="middle">3 tries, backoff</text>
+          </g>
+
+          <!-- edges (static line + animated dashes) -->
+          <path class="edge" d="M180 72 H240"/>
+          <path class="flow" d="M180 72 H240"/>
+          <path class="edge" d="M440 72 H490"/>
+          <path class="flow" d="M440 72 H490"/>
+          <path class="edge" d="M690 72 H760"/>
+          <path class="flow" d="M690 72 H760"/>
+          <path class="edge" d="M850 104 V170"/>
+          <path class="flow" d="M850 104 V170"/>
+          <path class="edge" d="M760 202 H690"/>
+          <path class="flow warn" d="M760 202 H690"/>
+          <path class="edge" d="M850 234 V300"/>
+          <path class="flow" d="M850 234 V300"/>
+          <path class="edge" d="M760 332 H690"/>
+          <path class="flow" d="M760 332 H690"/>
+          <path class="edge" d="M850 364 V430"/>
+          <path class="flow warn" d="M850 364 V430"/>
+          <path class="edge" d="M760 462 H690"/>
+          <path class="flow danger" d="M760 462 H690"/>
+          <path class="edge" d="M490 462 H465 V92 H490"/>
+          <path class="flow danger" d="M490 462 H465 V92 H490"/>
+          <path class="edge" d="M340 104 V170"/>
+          <path class="flow blue" d="M340 104 V170"/>
+          <path class="edge" d="M340 234 V300"/>
+          <path class="flow blue" d="M340 234 V300"/>
+
+          <!-- edge labels -->
+          <text class="label-sm" x="210" y="62" text-anchor="middle">POST</text>
+          <text class="label-sm" lang="pt" x="465" y="62" text-anchor="middle">publica</text>
+          <text class="label-sm" lang="en" x="465" y="62" text-anchor="middle">publish</text>
+          <text class="label-sm" lang="pt" x="725" y="62" text-anchor="middle">entrega</text>
+          <text class="label-sm" lang="en" x="725" y="62" text-anchor="middle">delivers</text>
+          <text class="label-sm" lang="pt" x="838" y="140" text-anchor="end">reserva: tryStart</text>
+          <text class="label-sm" lang="en" x="838" y="140" text-anchor="end">reserve: tryStart</text>
+          <text class="label-sm" lang="pt" x="725" y="196" text-anchor="middle">já existe</text>
+          <text class="label-sm" lang="en" x="725" y="196" text-anchor="middle">exists</text>
+          <text class="label-sm" lang="pt" x="862" y="270">reservado</text>
+          <text class="label-sm" lang="en" x="862" y="270">reserved</text>
+          <text class="label-sm" lang="pt" x="725" y="326" text-anchor="middle">aprovado</text>
+          <text class="label-sm" lang="en" x="725" y="326" text-anchor="middle">approved</text>
+          <text class="label-sm" lang="pt" x="862" y="400">falha</text>
+          <text class="label-sm" lang="en" x="862" y="400">failure</text>
+          <text class="label-sm" lang="pt" x="725" y="456" text-anchor="middle">esgotou</text>
+          <text class="label-sm" lang="en" x="725" y="456" text-anchor="middle">exhausted</text>
+          <text class="label-sm" lang="pt" x="352" y="140">coleta</text>
+          <text class="label-sm" lang="en" x="352" y="140">scrape</text>
+          <text class="label-sm" lang="pt" x="352" y="270">consulta</text>
+          <text class="label-sm" lang="en" x="352" y="270">queries</text>
+          <text class="label-sm" lang="pt" x="590" y="516" text-anchor="middle">reprocess volta para pix.recebido.v1</text>
+          <text class="label-sm" lang="en" x="590" y="516" text-anchor="middle">reprocess back to pix.recebido.v1</text>
+          <text class="label-sm" lang="pt" x="20" y="516">Verde: caminho feliz · Amarelo: retry · Vermelho: DLQ</text>
+          <text class="label-sm" lang="en" x="20" y="516">Green: happy path · Yellow: retry · Red: DLQ</text>
+
+          <!-- packets travelling the flow -->
+          <circle class="packet" r="5"><animateMotion begin="0s" dur="0.8s" repeatCount="indefinite" path="M180 72 H240"/></circle>
+          <circle class="packet" r="5"><animateMotion begin="0.8s" dur="0.8s" repeatCount="indefinite" path="M440 72 H490"/></circle>
+          <circle class="packet" r="5"><animateMotion begin="1.6s" dur="0.8s" repeatCount="indefinite" path="M690 72 H760"/></circle>
+          <circle class="packet" r="5"><animateMotion begin="2.4s" dur="0.8s" repeatCount="indefinite" path="M850 104 V170"/></circle>
+          <circle class="packet" r="5"><animateMotion begin="3.2s" dur="0.8s" repeatCount="indefinite" path="M850 234 V300"/></circle>
+          <circle class="packet" r="5"><animateMotion begin="4.0s" dur="0.8s" repeatCount="indefinite" path="M760 332 H690"/></circle>
+          <circle class="packet" r="5" style="fill:var(--warn)"><animateMotion begin="4.8s" dur="0.8s" repeatCount="indefinite" path="M850 364 V430"/></circle>
+          <circle class="packet" r="5" style="fill:var(--danger)"><animateMotion begin="5.6s" dur="0.8s" repeatCount="indefinite" path="M760 462 H690"/></circle>
+          <circle class="packet" r="5" style="fill:var(--danger)"><animateMotion begin="6.4s" dur="2.4s" repeatCount="indefinite" path="M490 462 H465 V92 H490"/></circle>
+          <circle class="packet" r="5" style="fill:var(--accent-2)"><animateMotion begin="0s" dur="2s" repeatCount="indefinite" path="M340 104 V170"/></circle>
+          <circle class="packet" r="5" style="fill:var(--accent-2)"><animateMotion begin="1s" dur="1.2s" repeatCount="indefinite" path="M340 234 V300"/></circle>
+        </svg>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><div><h4><span lang="pt">O cliente envia o Pix</span><span lang="en">The client sends the Pix</span></h4><p><span lang="pt">POST em /api/v1/pix com id (UUID), chavePix, valor e timestamp. A API responde 400 se o valor não for positivo; caso contrário, responde 202 Accepted sem esperar o processamento.</span><span lang="en">POST to /api/v1/pix with id (UUID), chavePix, valor and timestamp. The API answers 400 when the amount is not positive; otherwise it answers 202 Accepted without waiting for processing.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">A API publica na fila</span><span lang="en">The API publishes to the queue</span></h4><p><span lang="pt">O PixService envia o evento para pix.recebido.v1 pelo exchange padrão e grava nos headers x-correlation-id, x-tenant-id, x-retry-count e x-payload-version.</span><span lang="en">PixService sends the event to pix.recebido.v1 through the default exchange and sets the headers x-correlation-id, x-tenant-id, x-retry-count and x-payload-version.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">O consumer reserva o id</span><span lang="en">The consumer reserves the id</span></h4><p><span lang="pt">O tryStart faz um INSERT na tabela pix_processing. Se o id já está PROCESSED, ou tem reserva PROCESSING dentro do timeout (PT5M por padrão), a mensagem é ignorada. Um segundo POST com o mesmo id gera outra mensagem, e é aqui que ela é descartada.</span><span lang="en">tryStart runs an INSERT into pix_processing. If the id is already PROCESSED, or has a PROCESSING reservation inside the timeout (PT5M by default), the message is skipped. A second POST with the same id creates another message, and it is dropped here.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Validação e antifraude</span><span lang="en">Validation and fraud check</span></h4><p><span lang="pt">O valor precisa ser maior que zero. O PixAntifraudClient roda dentro do circuit breaker pixAntifraud. Valor inválido ou reprovação viram PixBusinessValidationException, que não passa pelo retry.</span><span lang="en">The amount must be greater than zero. PixAntifraudClient runs inside the pixAntifraud circuit breaker. An invalid amount or a fraud rejection becomes PixBusinessValidationException, which skips the retry.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Sucesso, retry ou DLQ</span><span lang="en">Success, retry or DLQ</span></h4><p><span lang="pt">Sucesso: markProcessed grava PROCESSED. Erro transitório: a reserva é liberada e a mensagem tenta de novo, até 3 tentativas, com backoff de 500 ms dobrando até 5 s. Esgotado o retry, a mensagem vai para pix.recebido.v1.dlq.</span><span lang="en">Success: markProcessed writes PROCESSED. Transient error: the reservation is released and the message is tried again, up to 3 attempts, with a 500 ms backoff that doubles up to 5 s. When retries run out, the message goes to pix.recebido.v1.dlq.</span></p></div></div>
+        <div class="step reveal"><div><h4><span lang="pt">Operação: DLQ e métricas</span><span lang="en">Operations: DLQ and metrics</span></h4><p><span lang="pt">A DLQ funciona como quarentena. POST em /api/v1/admin/dlq/pix/reprocess move mensagens para a exchange pix.recebido.v1.reprocess, que as devolve à fila principal. O Prometheus lê /actuator/prometheus e o Grafana mostra pix.processed.total, pix.failed.total e pix.processing.duration.</span><span lang="en">The DLQ works as quarantine. POST to /api/v1/admin/dlq/pix/reprocess moves messages to the pix.recebido.v1.reprocess exchange, which routes them back to the main queue. Prometheus scrapes /actuator/prometheus, and Grafana shows pix.processed.total, pix.failed.total and pix.processing.duration.</span></p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Código que importa</span><span lang="en">Code that matters</span></h2>
+
+      <div class="code-block reveal">
+        <div class="bar">src/main/java/famel/com/safepix_async/controller/PixController.java</div>
+        <pre><code class="language-java">    public ResponseEntity&lt;Void&gt; receberPix(
+            @RequestHeader(value = CORRELATION_ID_HEADER, required = false) String correlationId,
+            @RequestHeader(value = TENANT_ID_HEADER, required = false, defaultValue = DEFAULT_TENANT_ID) String tenantId,
+            @Valid @RequestBody PixRequest pixRequest
+    ) {
+        String resolvedCorrelationId = resolveCorrelationId(correlationId);
+        PixEvent pixEvent = pixRequest.toEvent(resolvedCorrelationId, tenantId);
+
+        LOGGER.info("Recebida solicitacao de Pix: id={}, chavePix={}, valor={}",
+                pixEvent.id(), SensitiveDataMasker.maskPixKey(pixEvent.chavePix()), pixEvent.valor());
+        pixService.enviarPix(pixEvent);
+        LOGGER.info("Solicitacao de Pix aceita para processamento: id={}, correlationId={}",
+                pixEvent.id(), pixEvent.correlationId());
+
+        return ResponseEntity.accepted()
+                .header(CORRELATION_ID_HEADER, pixEvent.correlationId())
+                .location(URI.create("/api/v1/pix/%s/status".formatted(pixEvent.id())))
+                .build();
+    }</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">A API não consulta o PostgreSQL. Ela valida o corpo (@Valid), publica o evento e responde 202 com Location. O processamento começa depois, no consumer.</span><span lang="en">The API does not query PostgreSQL. It validates the body (@Valid), publishes the event and answers 202 with Location. Processing starts later, in the consumer.</span></p>
+
+      <div class="code-block reveal" style="margin-top:40px">
+        <div class="bar">src/main/java/famel/com/safepix_async/consumer/JdbcProcessedPixStore.java</div>
+        <pre><code class="language-java">    @Override
+    public boolean tryStart(UUID pixId) {
+        Instant now = clock.instant();
+        int affected = jdbcClient.sql("""
+                        INSERT INTO pix_processing (pix_id, status, created_at, updated_at)
+                        VALUES (:pixId, :processing, :now, :now)
+                        ON CONFLICT (pix_id) DO UPDATE
+                            SET updated_at = EXCLUDED.updated_at
+                            WHERE pix_processing.status = :processing
+                              AND pix_processing.updated_at &lt; :staleBefore
+                        """)
+                .param("pixId", pixId)
+                .param("processing", PROCESSING)
+                .param("now", Timestamp.from(now))
+                .param("staleBefore", Timestamp.from(now.minus(processingTimeout)))
+                .update();
+        return affected == 1;
+    }</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">O id do Pix é a chave de idempotência. O INSERT ... ON CONFLICT só devolve true quando não existe linha PROCESSED nem reserva PROCESSING recente. Duas entregas do mesmo id disputam essa linha, e apenas uma segue.</span><span lang="en">The Pix id is the idempotency key. INSERT ... ON CONFLICT returns true only when there is no PROCESSED row and no recent PROCESSING reservation. Two deliveries of the same id compete for that row, and only one continues.</span></p>
+
+      <div class="code-block reveal" style="margin-top:40px">
+        <div class="bar">src/main/java/famel/com/safepix_async/config/RabbitMqConfig.java</div>
+        <pre><code class="language-java">        factory.setAdviceChain(RetryInterceptorBuilder.stateless()
+                .retryPolicy(pixRetryPolicy(maxAttempts, initialIntervalMs, multiplier, maxIntervalMs))
+                .recoverer(new RepublishMessageRecoverer(rabbitTemplate, "", PIX_DLQ))
+                .build());
+    // ...
+    RetryPolicy pixRetryPolicy(int maxAttempts, long initialIntervalMs, double multiplier, long maxIntervalMs) {
+        return RetryPolicy.builder()
+                .maxRetries(Math.max(0, maxAttempts - 1))
+                .delay(Duration.ofMillis(initialIntervalMs))
+                .multiplier(multiplier)
+                .maxDelay(Duration.ofMillis(maxIntervalMs))
+                .excludes(PixBusinessValidationException.class, AmqpRejectAndDontRequeueException.class)
+                .build();
+    }</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">Retry só vale para erro transitório: PixBusinessValidationException está em excludes e segue direto para o recoverer. Depois da última tentativa, o RepublishMessageRecoverer envia a mensagem para pix.recebido.v1.dlq.</span><span lang="en">Retry only applies to transient errors: PixBusinessValidationException is in excludes and goes straight to the recoverer. After the last attempt, RepublishMessageRecoverer sends the message to pix.recebido.v1.dlq.</span></p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Prova</span><span lang="en">Proof</span></h2>
+      <div class="proof">
+        <div class="card reveal"><div class="big">202</div><p class="muted"><span lang="pt">Teste de integração deveEnviarPostParaApiEEntregarMensagemAoListener: o POST responde 202 e a mensagem chega ao listener.</span><span lang="en">Integration test deveEnviarPostParaApiEEntregarMensagemAoListener: the POST returns 202 and the message reaches the listener.</span></p></div>
+        <div class="card reveal"><div class="big">1</div><p class="muted"><span lang="pt">deveReservarPixApenasUmaVez: o primeiro tryStart retorna true e o segundo, false, contra PostgreSQL real.</span><span lang="en">deveReservarPixApenasUmaVez: the first tryStart returns true and the second returns false, against a real PostgreSQL.</span></p></div>
+        <div class="card reveal"><div class="big">5 min</div><p class="muted"><span lang="pt">deveAssumirReservaAbandonadaAposTimeout: com 1 min a reserva ainda não é assumida; com 6 min, sim (timeout de 5 min).</span><span lang="en">deveAssumirReservaAbandonadaAposTimeout: at 1 min the reservation is still held; at 6 min it is taken over (5 min timeout).</span></p></div>
+        <div class="card reveal"><div class="big">DLQ</div><p class="muted"><span lang="pt">deveEnviarMensagemInvalidaParaDlq: um Pix com valor zero publicado na fila principal termina na DLQ com o mesmo id.</span><span lang="en">deveEnviarMensagemInvalidaParaDlq: a Pix with zero amount published to the main queue ends in the DLQ with the same id.</span></p></div>
+        <div class="card reveal"><div class="big">50%</div><p class="muted"><span lang="pt">Circuit breaker pixAntifraud: failure-rate-threshold=50 e wait-duration-in-open-state=30s, conforme o README.</span><span lang="en">pixAntifraud circuit breaker: failure-rate-threshold=50 and wait-duration-in-open-state=30s, as stated in the README.</span></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container next-prev">
+      <a class="btn" href="brave-cli.html">← Brave CLI</a>
+      <a class="btn" href="auditoria-pix.html">Auditoria PIX →</a>
+    </div>
+  </section>
+
+  <footer>© 2026 Rafael Andrade Tanimoto</footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="../js/main.js"></script>
+</body>
+</html>
