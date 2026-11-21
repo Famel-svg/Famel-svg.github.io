@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="pt-BR" data-lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WTC CRM Chat · Rafael Tanimoto</title>
+  <meta name="description" content="Raio-X do WTC CRM Chat: API Spring Boot com JWT, STOMP, Firestore e FCM, e app Android em Jetpack Compose.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container">
+      <a class="brand" href="../index.html">~/rafael</a>
+      <div class="links">
+        <a href="../index.html#projects"><span lang="pt">projetos</span><span lang="en">projects</span></a>
+        <a href="../index.html#contact"><span lang="pt">contato</span><span lang="en">contact</span></a>
+      </div>
+      <button class="lang-toggle" aria-label="Trocar idioma / Switch language">EN</button>
+    </div>
+  </nav>
+
+  <header class="p-hero">
+    <div class="container">
+      <a class="back" href="../index.html#projects">← <span lang="pt">voltar aos projetos</span><span lang="en">back to projects</span></a>
+      <h1>WTC CRM Chat</h1>
+      <div class="tagline"><span lang="pt">Chat corporativo com JWT, STOMP e FCM</span><span lang="en">Corporate chat with JWT, STOMP and FCM</span></div>
+      <div class="chips" style="margin-top:16px"><span class="chip">Java 17</span><span class="chip">Spring Boot 3</span><span class="chip">Spring Security</span><span class="chip">JWT</span><span class="chip">WebSocket/STOMP</span><span class="chip">Firestore</span><span class="chip">FCM</span><span class="chip">Kotlin</span><span class="chip">Jetpack Compose</span><span class="chip">Retrofit</span></div>
+      <div class="meta">
+        <a class="btn solid" href="https://github.com/Famel-svg/WTC_Chat" target="_blank" rel="noopener">GitHub →</a>
+      </div>
+    </div>
+  </header>
+
+  <section style="padding-top:0">
+    <div class="container reveal">
+      <div class="problem">
+        <strong><span lang="pt">o problema</span><span lang="en">the problem</span></strong>
+        <p><span lang="pt">Um chat corporativo precisa entregar mensagens sem recarregar a tela e avisar quem está com o app fechado. Projeto acadêmico da FIAP para o World Trade Center São Paulo.</span><span lang="en">A corporate chat needs to deliver messages without reloading the screen and to notify people whose app is closed. Academic FIAP project for World Trade Center São Paulo.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Raio-X</span><span lang="en">X-ray</span></h2>
+      <p class="section-sub reveal"><span lang="pt">Como uma mensagem sai do app Android, passa pela API Spring Boot e chega ao banco e aos celulares dos participantes.</span><span lang="en">How a message leaves the Android app, goes through the Spring Boot API and reaches the database and the participants' phones.</span></p>
+      <div class="diagram-wrap reveal">
+        <svg class="diagram" viewBox="0 0 960 500" role="img" aria-label="PT: o app Android chama a API com JWT; o chat grava no Firestore, publica no broker STOMP e envia FCM. EN: the Android app calls the API with JWT; chat writes to Firestore, publishes to the STOMP broker and sends FCM.">
+          <!-- Edges (drawn first, under the nodes) -->
+          <path class="flow" d="M120 104 V150"/>
+          <circle class="packet" r="5"><animateMotion dur="2s" repeatCount="indefinite" path="M120 104 V150"/></circle>
+          <path class="flow" d="M220 72 H260"/>
+          <circle class="packet" r="5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M220 72 H260"/></circle>
+          <path class="flow" d="M220 182 H260"/>
+          <circle class="packet" r="5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M220 182 H260"/></circle>
+          <path class="edge" d="M120 214 V260"/>
+          <path class="flow" d="M360 214 V260"/>
+          <path class="flow" d="M460 286 H500"/>
+          <circle class="packet" r="5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M460 286 H500"/></circle>
+          <path class="flow blue" d="M220 402 H260"/>
+          <path class="flow blue" d="M460 396 H480 V286 H500"/>
+          <path class="flow blue" d="M600 260 V214"/>
+          <circle class="packet" r="5"><animateMotion dur="2s" repeatCount="indefinite" path="M600 260 V214"/></circle>
+          <path class="flow blue" d="M700 182 H740"/>
+          <path class="flow" d="M700 292 H740"/>
+          <circle class="packet" r="5"><animateMotion dur="2.4s" repeatCount="indefinite" path="M700 292 H740"/></circle>
+          <path class="flow" d="M840 324 V370"/>
+          <circle class="packet" r="5"><animateMotion dur="2s" repeatCount="indefinite" path="M840 324 V370"/></circle>
+          <path class="flow" d="M600 324 V370"/>
+
+          <!-- Column 1: client side -->
+          <g class="node accent">
+            <rect x="20" y="40" width="200" height="64" rx="10"/>
+            <text x="120" y="76" text-anchor="middle" lang="pt">App Android (Compose)</text>
+            <text x="120" y="76" text-anchor="middle" lang="en">Android app (Compose)</text>
+          </g>
+          <g class="node">
+            <rect x="20" y="150" width="200" height="64" rx="10"/>
+            <text x="120" y="186" text-anchor="middle">ChatViewModel (Kotlin)</text>
+          </g>
+          <g class="node">
+            <rect x="20" y="260" width="200" height="64" rx="10"/>
+            <text x="120" y="286" text-anchor="middle">Firebase Realtime DB</text>
+            <text x="120" y="304" text-anchor="middle" lang="pt">escuta chats/{id}</text>
+            <text x="120" y="304" text-anchor="middle" lang="en">listens chats/{id}</text>
+          </g>
+          <g class="node">
+            <rect x="20" y="370" width="200" height="64" rx="10"/>
+            <text x="120" y="396" text-anchor="middle" lang="pt">Cliente web</text>
+            <text x="120" y="396" text-anchor="middle" lang="en">Web client</text>
+            <text x="120" y="414" text-anchor="middle">STOMP over WebSocket</text>
+          </g>
+
+          <!-- Column 2: API entry points -->
+          <g class="node accent">
+            <rect x="260" y="40" width="200" height="64" rx="10"/>
+            <text x="360" y="66" text-anchor="middle" lang="pt">Login REST</text>
+            <text x="360" y="66" text-anchor="middle" lang="en">REST login</text>
+            <text x="360" y="84" text-anchor="middle">JWT HS256 · 8 h</text>
+          </g>
+          <g class="node">
+            <rect x="260" y="150" width="200" height="64" rx="10"/>
+            <text x="360" y="186" text-anchor="middle">JwtAuthenticationFilter</text>
+          </g>
+          <g class="node">
+            <rect x="260" y="260" width="200" height="64" rx="10"/>
+            <text x="360" y="286" text-anchor="middle">ChatController</text>
+            <text x="360" y="304" text-anchor="middle">REST /api/chat</text>
+          </g>
+          <g class="node">
+            <rect x="260" y="370" width="200" height="64" rx="10"/>
+            <text x="360" y="396" text-anchor="middle">ChatWebSocketController</text>
+            <text x="360" y="414" text-anchor="middle">STOMP /app/chat.send</text>
+          </g>
+
+          <!-- Column 3: core and persistence -->
+          <g class="node">
+            <rect x="500" y="150" width="200" height="64" rx="10"/>
+            <text x="600" y="176" text-anchor="middle">Broker STOMP /topic</text>
+            <text x="600" y="194" text-anchor="middle" lang="pt">tempo real</text>
+            <text x="600" y="194" text-anchor="middle" lang="en">real time</text>
+          </g>
+          <g class="node accent">
+            <rect x="500" y="260" width="200" height="64" rx="10"/>
+            <text x="600" y="286" text-anchor="middle">ChatService</text>
+            <text x="600" y="304" text-anchor="middle" lang="pt">persiste · publica · push</text>
+            <text x="600" y="304" text-anchor="middle" lang="en">saves · publishes · pushes</text>
+          </g>
+          <g class="node">
+            <rect x="500" y="370" width="200" height="64" rx="10"/>
+            <text x="600" y="396" text-anchor="middle">Firestore</text>
+            <text x="600" y="414" text-anchor="middle">messages · users</text>
+          </g>
+
+          <!-- Column 4: delivery -->
+          <g class="node">
+            <rect x="740" y="150" width="200" height="64" rx="10"/>
+            <text x="840" y="176" text-anchor="middle" lang="pt">Assinantes /topic</text>
+            <text x="840" y="176" text-anchor="middle" lang="en">/topic subscribers</text>
+            <text x="840" y="194" text-anchor="middle">STOMP</text>
+          </g>
+          <g class="node accent">
+            <rect x="740" y="260" width="200" height="64" rx="10"/>
+            <text x="840" y="286" text-anchor="middle">PushNotificationService</text>
+            <text x="840" y="304" text-anchor="middle">FCM · Firebase Admin</text>
+          </g>
+          <g class="node">
+            <rect x="740" y="370" width="200" height="64" rx="10"/>
+            <text x="840" y="396" text-anchor="middle" lang="pt">Celular dos participantes</text>
+            <text x="840" y="396" text-anchor="middle" lang="en">Participants' phones</text>
+            <text x="840" y="414" text-anchor="middle">FCM → notificação</text>
+          </g>
+
+          <!-- Legend -->
+          <text class="label-sm" x="20" y="464" lang="pt">Linha animada = fluxo de mensagem. Azul = canal em tempo real do backend.</text>
+          <text class="label-sm" x="20" y="464" lang="en">Animated line = message flow. Blue = backend real-time channel.</text>
+          <text class="label-sm" x="20" y="482" lang="pt">Linha fina = escuta em tempo real no app.</text>
+          <text class="label-sm" x="20" y="482" lang="en">Thin line = live listener in the app.</text>
+        </svg>
+      </div>
+
+      <div class="steps">
+        <div class="step reveal"><div>
+          <h4><span lang="pt">Login gera o JWT</span><span lang="en">Login issues the JWT</span></h4>
+          <p><span lang="pt">O app chama POST /api/auth/login. O AuthService confere a senha com o hash BCrypt guardado na coleção users do Firestore e devolve um JWT assinado em HS256, válido por 8 horas por padrão.</span><span lang="en">The app calls POST /api/auth/login. AuthService checks the password against the BCrypt hash stored in the users collection in Firestore and returns a JWT signed with HS256, valid for 8 hours by default.</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">Envio com Bearer</span><span lang="en">Send with Bearer token</span></h4>
+          <p><span lang="pt">O ChatViewModel envia POST /api/chat/conversations/{id}/messages com o cabeçalho Authorization: Bearer. O JwtAuthenticationFilter valida o token e identifica o usuário nas rotas protegidas.</span><span lang="en">ChatViewModel sends POST /api/chat/conversations/{id}/messages with an Authorization: Bearer header. JwtAuthenticationFilter validates the token and identifies the user on protected routes.</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">Persistência no Firestore</span><span lang="en">Saved to Firestore</span></h4>
+          <p><span lang="pt">O ChatService grava a mensagem na coleção messages e atualiza o último texto e a data da conversa.</span><span lang="en">ChatService writes the message to the messages collection and updates the conversation's last text and date.</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">Tempo real via STOMP</span><span lang="en">Real time via STOMP</span></h4>
+          <p><span lang="pt">Cada mensagem é publicada em /topic/conversation/{id} pelo broker STOMP. Clientes web inscritos recebem a mensagem no mesmo instante, e quem envia pelo canal /app/chat.send usa o mesmo caminho.</span><span lang="en">Each message is published to /topic/conversation/{id} by the STOMP broker. Subscribed web clients receive it instantly, and clients sending through /app/chat.send follow the same path.</span></p>
+        </div></div>
+        <div class="step reveal"><div>
+          <h4><span lang="pt">Push para quem está fora</span><span lang="en">Push for people outside the app</span></h4>
+          <p><span lang="pt">Para cada participante que não é o remetente e tem fcmToken, o PushNotificationService envia uma mensagem FCM com título, prévia de até 120 caracteres e os dados da conversa. No celular, WtcFirebaseMessagingService mostra a notificação.</span><span lang="en">For each participant who is not the sender and has an fcmToken, PushNotificationService sends an FCM message with a title, a preview of up to 120 characters and the conversation data. On the phone, WtcFirebaseMessagingService shows the notification.</span></p>
+        </div></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Código que importa</span><span lang="en">Code that matters</span></h2>
+
+      <div class="code-block reveal">
+        <div class="bar">wtc-crm-backend/src/main/java/br/com/fiap/wtccrm/config/WebSocketConfig.java</div>
+        <pre><code class="language-java">@Configuration
+@EnableWebSocketMessageBroker
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/topic");
+        config.setApplicationDestinationPrefixes("/app");
+    }
+
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/ws/chat").setAllowedOriginPatterns("*").withSockJS();
+        // WebSocket nativo (Android/iOS) — sem SockJS
+        registry.addEndpoint("/ws/native").setAllowedOriginPatterns("*");
+    }
+}</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">Configura o broker em memória (/topic), o prefixo de aplicação (/app) e dois endpoints: /ws/chat com SockJS para navegadores e /ws/native para WebSocket nativo.</span><span lang="en">Configures the in-memory broker (/topic), the application prefix (/app) and two endpoints: /ws/chat with SockJS for browsers and /ws/native for native WebSocket.</span></p>
+
+      <div class="code-block reveal" style="margin-top:36px">
+        <div class="bar">wtc-crm-backend/src/main/java/br/com/fiap/wtccrm/auth/security/JwtAuthenticationFilter.java</div>
+        <pre><code class="language-java">@Override
+protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+        throws ServletException, IOException {
+    String authHeader = request.getHeader("Authorization");
+    if (authHeader != null &amp;&amp; authHeader.startsWith("Bearer ")) {
+        String token = authHeader.substring(7);
+        if (jwtUtil.validateToken(token)) {
+            String userId = jwtUtil.extractUserId(token);
+            String role = jwtUtil.extractRole(token);
+            var auth = new UsernamePasswordAuthenticationToken(
+                    userId,
+                    null,
+                    List.of(new SimpleGrantedAuthority("ROLE_" + role)));
+            auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        }
+    }
+    chain.doFilter(request, response);
+}</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">O JwtAuthenticationFilter lê o Bearer do cabeçalho Authorization, valida o token com o JwtUtil e preenche o SecurityContext com a role do usuário (ROLE_OPERATOR ou ROLE_CLIENT).</span><span lang="en">JwtAuthenticationFilter reads the Bearer token from the Authorization header, validates it with JwtUtil and fills the SecurityContext with the user's role (ROLE_OPERATOR or ROLE_CLIENT).</span></p>
+
+      <div class="code-block reveal" style="margin-top:36px">
+        <div class="bar">wtc-login-main/app/src/main/java/br/com/fiap/wtchat/viewmodel/ChatViewModel.kt</div>
+        <pre><code class="language-kotlin">fun connect(convId: String) {
+    // ...
+    connectFirebaseChatListener(convId, session.userId)
+}
+
+private fun connectFirebaseChatListener(convId: String, currentUserId: String) {
+    chatDatabaseRef = FirebaseDatabase.getInstance().getReference("chats").child(convId)
+    // ...
+}
+
+fun sendMessage(text: String) {
+    val cid = conversationId ?: return
+    if (text.isBlank()) return
+
+    val session = SessionManager.session ?: return
+
+    viewModelScope.launch {
+        try {
+            val auth = "Bearer ${session.token}"
+            val request = ChatMessageDTO(
+                conversationId = cid,
+                senderId = session.userId,
+                senderName = session.name,
+                content = text,
+                type = "TEXT",
+                mediaUrl = null,
+                status = null,
+                sentAt = null
+            )
+
+            withContext(Dispatchers.IO) {
+                RetrofitInstance.api.sendMessage(auth, cid, request)
+            }
+        } catch (e: Exception) {
+            Log.e("ChatViewModel", "Falha ao enviar mensagem via REST", e)
+        }
+    }
+}</code></pre>
+      </div>
+      <p class="code-note reveal"><span lang="pt">O ChatViewModel envia mensagens por REST (sendMessage) e mantém um listener em tempo real sobre chats/{id} no Realtime Database (connectFirebaseChatListener).</span><span lang="en">ChatViewModel sends messages over REST (sendMessage) and keeps a real-time listener on chats/{id} in the Realtime Database (connectFirebaseChatListener).</span></p>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span lang="pt">Prova</span><span lang="en">Proof</span></h2>
+      <div class="proof">
+        <div class="card reveal"><div class="big">2</div><p class="muted"><span lang="pt">módulos independentes no repositório: API Spring Boot (Java 17) e app Android (Kotlin, Compose)</span><span lang="en">independent modules in the repository: Spring Boot API (Java 17) and Android app (Kotlin, Compose)</span></p></div>
+        <div class="card reveal"><div class="big">3</div><p class="muted"><span lang="pt">canais de entrega: STOMP para tempo real, FCM para celulares e listener do Realtime Database no app</span><span lang="en">delivery channels: STOMP for real time, FCM for phones and the Realtime Database listener in the app</span></p></div>
+        <div class="card reveal"><div class="big">8</div><p class="muted"><span lang="pt">coleções Firestore usadas pelos repositórios, incluindo messages e users</span><span lang="en">Firestore collections used by the repositories, including messages and users</span></p></div>
+        <div class="card reveal"><div class="big">17</div><p class="muted"><span lang="pt">rotas REST declaradas no cliente Retrofit do app (WtcApiService)</span><span lang="en">REST routes declared in the app's Retrofit client (WtcApiService)</span></p></div>
+        <div class="card reveal"><div class="big">6</div><p class="muted"><span lang="pt">métodos @Test no backend, em 2 arquivos de teste</span><span lang="en">@Test methods in the backend, across 2 test files</span></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container next-prev">
+      <a class="btn" href="estoque-reserva.html">← Estoque Reserva</a>
+      <a class="btn" href="fluxo-android.html">Fluxo →</a>
+    </div>
+  </section>
+
+  <footer>© 2026 Rafael Andrade Tanimoto</footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="../js/main.js"></script>
+</body>
+</html>
